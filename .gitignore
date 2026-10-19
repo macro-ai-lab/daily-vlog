@@ -1,0 +1,18 @@
+# Personal media and local output must stay outside the repository.
+.DS_Store
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+outputs/
+incoming/
+recordings/
+*.mp4
+*.mov
+*.m4v
+*.mkv
+*.mp3
+*.wav
+*.zip

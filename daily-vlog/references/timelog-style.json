@@ -1,0 +1,18 @@
+{
+  "timeline_layout": "center",
+  "timeline_time_font_size": 54,
+  "caption_style": {
+    "font_index": 0,
+    "font_size": 52,
+    "color": "#FFFFFF",
+    "align": "center",
+    "y": 980,
+    "stroke_width": 2,
+    "stroke_color": "#000000",
+    "shadow_offset": [
+      1,
+      2
+    ],
+    "shadow_opacity": 210
+  }
+}

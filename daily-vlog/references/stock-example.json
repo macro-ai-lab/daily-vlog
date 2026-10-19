@@ -1,0 +1,113 @@
+{
+  "reference_url": "https://www.instagram.com/reel/Ded54T6BeLt/",
+  "reference_analysis": "Intermittent screenshots of actual muted browser playback inspected. Centered time plus short action note observed; exact cut map, full continuous playback and music listening unverified. Styling reference only, no exact reproduction required.",
+  "timeline_mode": true,
+  "time_labels_are_editorial": true,
+  "caption_style": {
+    "font_index": 4,
+    "font_size": 53,
+    "y": 980,
+    "stroke_width": 2,
+    "shadow_opacity": 220
+  },
+  "music": null,
+  "shots": [
+    {
+      "source": "incoming/family_sample_001/mixkit-43342.mp4",
+      "start": 0.5,
+      "duration": 1.5,
+      "crop_x": 0.87,
+      "time_label": "7:20 am",
+      "caption": "아침 놀이"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43342.mp4",
+      "start": 4,
+      "duration": 1.5,
+      "crop_x": 0.15,
+      "time_label": "7:25 am",
+      "caption": "커피 한 잔"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43345.mp4",
+      "start": 0.5,
+      "duration": 1.5,
+      "crop_x": 0.48,
+      "time_label": "7:30 am",
+      "caption": "이것도 봐줘"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43345.mp4",
+      "start": 2,
+      "duration": 1.5,
+      "crop_x": 0.5,
+      "time_label": "7:30 am",
+      "caption": "머리 정리"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43345.mp4",
+      "start": 3.5,
+      "duration": 2.5,
+      "crop_x": 0.72,
+      "time_label": "7:31 am",
+      "caption": "뽀뽀"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43345.mp4",
+      "start": 7,
+      "duration": 1.5,
+      "crop_x": 0.55,
+      "time_label": "7:35 am",
+      "caption": "한 입 냠"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43356.mp4",
+      "start": 0.5,
+      "duration": 1.5,
+      "crop_x": 0.45,
+      "time_label": "8:10 am",
+      "caption": "등교 준비",
+      "crop_end_x": 0.35,
+      "timeline_offset_y": 300
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43416.mp4",
+      "start": 9.3,
+      "duration": 0.625,
+      "crop_x": 0.5,
+      "time_label": "8:10 am",
+      "caption": "등교 준비",
+      "crop_end_x": 0.68,
+      "timeline_offset_y": 300
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43350.mp4",
+      "start": 0.5,
+      "duration": 1.5,
+      "crop_x": 0.25,
+      "time_label": "4:20 pm",
+      "caption": "그림 시간"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43350.mp4",
+      "start": 6,
+      "duration": 2,
+      "crop_x": 0.25,
+      "time_label": "4:30 pm",
+      "caption": "작품 공개"
+    },
+    {
+      "source": "incoming/family_sample_001/mixkit-43350.mp4",
+      "start": 9,
+      "duration": 2,
+      "crop_x": 0.25,
+      "time_label": "4:35 pm",
+      "caption": "오늘도 딸이랑"
+    }
+  ],
+  "timeline_layout": "center",
+  "timeline_time_font_size": 55,
+  "source_kind": "stock",
+  "disclosure_label": "예시 타임라인 · 스톡",
+  "time_label_policy": "editorial"
+}
