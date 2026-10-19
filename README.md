@@ -2,6 +2,8 @@
 
 아이폰 등으로 찍은 일상 영상을 Codex와 함께 짧은 세로 타임로그로 편집하는 스킬입니다.
 
+[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v008/daily-vlog-skill-v008.zip) · [v008 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v008)
+
 **영상 확인 → 콘티 확인 → 자막·스타일 선택 → 시안 제작 → 수정** 순서로 진행합니다. 설치 명령과 편집 계획은 Codex가 다루며, 사용자는 영상과 원하는 느낌을 말하면 됩니다.
 
 ## 가장 쉬운 설치
@@ -9,6 +11,8 @@
 1. 파일을 읽고 명령을 실행할 수 있는 Mac 또는 Windows PC의 Codex를 엽니다.
 2. 이 저장소 주소와 아래 문장을 함께 보냅니다.
 
+> https://github.com/macro-ai-lab/daily-vlog
+>
 > 이 GitHub 저장소의 README와 daily-vlog/SKILL.md를 읽고, 내 운영체제에 맞게 일상 브이로그 스킬을 설치해줘. 필요한 편집 도구도 준비하고 실행 점검까지 해줘. 기존 스킬이 있으면 덮어쓰지 말고 버전을 확인해줘.
 
 3. 필요한 폴더 접근·설치·네트워크 승인 요청이 나오면 내용을 확인합니다.
