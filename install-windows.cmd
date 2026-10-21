@@ -1,10 +1,6 @@
 @echo off
-rem Allows only this PowerShell process to run the bundled installer.
-powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0install-windows.ps1"
-if errorlevel 1 (
- echo Installation did not finish. Keep this message and ask your agent for help.
- pause
- exit /b 1
-)
-echo Installation completed. You can close this window.
-pause
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0install-windows.ps1" %*
+set "INSTALL_RESULT=%ERRORLEVEL%"
+if not "%INSTALL_RESULT%"=="0" echo Installation checks did not finish. Keep the error above.
+if "%~1"=="" pause
+exit /b %INSTALL_RESULT%

@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $VlogArguments = @($args)
 if ($VlogArguments.Count -eq 0 -or $VlogArguments[0] -eq '--help') {
-    Write-Output 'daily-vlog: setup | doctor | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE'
+    Write-Output 'daily-vlog: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE'
     return
 }
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw '이 실행기는 Windows용입니다.' }
@@ -12,8 +12,15 @@ if ($NativeArch -ne 'AMD64') { throw '현재 Windows x64만 지원합니다. ARM
 $SkillDir = Split-Path $PSScriptRoot -Parent
 $RuntimeDir = $env:DAILY_VLOG_RUNTIME
 if (-not $RuntimeDir) {
-    if (-not $env:LOCALAPPDATA) { throw '사용자 LocalAppData 폴더를 찾지 못했습니다.' }
-    $RuntimeDir = Join-Path $env:LOCALAPPDATA 'daily-vlog\v1'
+    $ProjectRoot = Split-Path (Split-Path (Split-Path $SkillDir -Parent) -Parent) -Parent
+    $ProjectSkill = Join-Path $ProjectRoot '.agents\skills\daily-vlog'
+    if ([IO.Path]::GetFullPath($SkillDir) -eq [IO.Path]::GetFullPath($ProjectSkill)) {
+        $RuntimeDir = Join-Path $ProjectRoot '.daily-vlog-runtime\v1'
+    }
+    else {
+        if (-not $env:LOCALAPPDATA) { throw '사용자 LocalAppData 폴더를 찾지 못했습니다.' }
+        $RuntimeDir = Join-Path $env:LOCALAPPDATA 'daily-vlog\v1'
+    }
 }
 $env:DAILY_VLOG_RUNTIME = $RuntimeDir
 $env:UV_CACHE_DIR = Join-Path $RuntimeDir 'uv-cache'

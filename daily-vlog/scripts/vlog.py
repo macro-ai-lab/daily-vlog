@@ -68,6 +68,7 @@ def main():
     p = argparse.ArgumentParser()
     sp = p.add_subparsers(dest='command', required=True)
     sp.add_parser('doctor')
+    smoke = sp.add_parser('smoke'); smoke.add_argument('--output-dir', required=True)
     i = sp.add_parser('inspect'); i.add_argument('folder', nargs='?'); i.add_argument('--files', nargs='+')
     f = sp.add_parser('frames'); f.add_argument('file'); f.add_argument('--output-dir', required=True)
     s = sp.add_parser('survey'); s.add_argument('file'); s.add_argument('--output-dir', required=True)
@@ -101,6 +102,9 @@ def main():
         return
     a = p.parse_args()
     if a.command == 'doctor': result = doctor()
+    elif a.command == 'smoke':
+        from installation_check import check
+        result = check(a.output_dir)
     elif a.command == 'inspect': result = inspect(a.folder, a.files)
     elif a.command == 'survey':
         from survey import survey

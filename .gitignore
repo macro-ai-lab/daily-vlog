@@ -16,3 +16,6 @@ recordings/
 *.mp3
 *.wav
 *.zip
+
+# Project-scoped private runtime; never distribute or commit it.
+.daily-vlog-runtime/

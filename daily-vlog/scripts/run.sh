@@ -1,9 +1,9 @@
 #!/bin/bash
 # Private runtime; no Homebrew, sudo, shell profile or system Python changes.
 set -euo pipefail
-SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
 if [[ "${1:-}" == "--help" || $# == 0 ]]; then
-  echo '일상 브이로그: setup | doctor | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
+  echo '일상 브이로그: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
   exit 0
 fi
 if [[ "$(uname -s)" != Darwin ]]; then
@@ -15,7 +15,13 @@ if (( MAC_MAJOR < 14 )); then
   echo '이 버전은 macOS 14 이상이 필요합니다. 시스템 업데이트는 자동으로 진행하지 않습니다.' >&2
   exit 2
 fi
-TASK_RUNTIME="${DAILY_VLOG_RUNTIME:-${HOME}/Library/Caches/daily-vlog/v1}"
+# A project-scoped skill keeps its tools in that same authorized project.
+PROJECT_ROOT="$(cd "$SKILL_DIR/../../.." && pwd -P)"
+if [[ "$SKILL_DIR" == "$PROJECT_ROOT/.agents/skills/daily-vlog" ]]; then
+  TASK_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT_ROOT/.daily-vlog-runtime/v1}"
+else
+  TASK_RUNTIME="${DAILY_VLOG_RUNTIME:-${HOME}/Library/Caches/daily-vlog/v1}"
+fi
 export UV_CACHE_DIR="$TASK_RUNTIME/uv-cache"
 export UV_PYTHON_INSTALL_DIR="$TASK_RUNTIME/python"
 export UV_PROJECT_ENVIRONMENT="$TASK_RUNTIME/venv"
