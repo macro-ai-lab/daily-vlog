@@ -3,7 +3,7 @@
 set -euo pipefail
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
 if [[ "${1:-}" == "--help" || $# == 0 ]]; then
-  echo '일상 브이로그: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
+  echo '일상 브이로그: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
   exit 0
 fi
 if [[ "$(uname -s)" != Darwin ]]; then
@@ -15,9 +15,43 @@ if (( MAC_MAJOR < 14 )); then
   echo '이 버전은 macOS 14 이상이 필요합니다. 시스템 업데이트는 자동으로 진행하지 않습니다.' >&2
   exit 2
 fi
-# A project-scoped skill keeps its tools in that same authorized project.
-PROJECT_ROOT="$(cd "$SKILL_DIR/../../.." && pwd -P)"
-if [[ "$SKILL_DIR" == "$PROJECT_ROOT/.agents/skills/daily-vlog" ]]; then
+# Installation context persists outside the skill files, without client settings changes.
+SKILLS_DIR="$(dirname "$SKILL_DIR")"
+CONTAINER_DIR="$(dirname "$SKILLS_DIR")"
+INSTALL_MARKER="$SKILLS_DIR/.daily-vlog-install"
+INSTALL_SCOPE="source"
+INSTALL_CLIENT="${AI_SKILL_CLIENT:-codex}"
+if [[ -L "$INSTALL_MARKER" ]]; then
+  echo '설치 기록이 링크입니다. 설치 위치를 확인하세요.' >&2; exit 2
+elif [[ -e "$INSTALL_MARKER" ]]; then
+  INSTALL_DATA=()
+  while IFS= read -r INSTALL_LINE || [[ -n "$INSTALL_LINE" ]]; do INSTALL_DATA+=("$INSTALL_LINE"); done < "$INSTALL_MARKER"
+  if [[ ${#INSTALL_DATA[@]} != 3 || "${INSTALL_DATA[0]}" != skill-install-v1 ]]; then
+    echo '설치 기록 형식이 다릅니다. 설치 위치를 확인하세요.' >&2; exit 2
+  fi
+  INSTALL_CLIENT="${INSTALL_DATA[1]}"; INSTALL_SCOPE="${INSTALL_DATA[2]}"
+  [[ "$INSTALL_SCOPE" == project || "$INSTALL_SCOPE" == user ]] || { echo '설치 범위 기록이 다릅니다.' >&2; exit 2; }
+elif [[ "$(basename "$CONTAINER_DIR")" == .claude ]]; then
+  INSTALL_CLIENT='claude-code'
+elif [[ "$(basename "$CONTAINER_DIR")" == .agents || "$(basename "$CONTAINER_DIR")" == .codex ]]; then
+  INSTALL_CLIENT='codex'
+fi
+case "$INSTALL_CLIENT" in
+  claude-code) CONFIG_BASE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}" ;;
+  codex) CONFIG_BASE="${CODEX_HOME:-$HOME/.codex}" ;;
+  *) echo '설치 클라이언트를 확인할 수 없습니다.' >&2; exit 2 ;;
+esac
+if [[ ! -e "$INSTALL_MARKER" && "$(basename "$SKILLS_DIR")" == skills ]]; then
+  if [[ "$CONTAINER_DIR" == "$CONFIG_BASE" ]]; then INSTALL_SCOPE='user'
+  elif [[ "$(basename "$CONTAINER_DIR")" == .agents || "$(basename "$CONTAINER_DIR")" == .claude ]]; then INSTALL_SCOPE='project'
+  fi
+fi
+if [[ "$INSTALL_SCOPE" == user ]]; then CONFIG_BASE="$CONTAINER_DIR"; fi
+[[ "$CONFIG_BASE" == /* ]] || { echo '클라이언트 설정 경로는 절대경로여야 합니다.' >&2; exit 2; }
+export AI_SKILL_CLIENT="$INSTALL_CLIENT"
+export DAILY_VLOG_PROFILE="${DAILY_VLOG_PROFILE:-$CONFIG_BASE/daily-vlog/user-overrides.json}"
+if [[ "$INSTALL_SCOPE" == project ]]; then
+  PROJECT_ROOT="$(dirname "$CONTAINER_DIR")"
   TASK_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT_ROOT/.daily-vlog-runtime/v1}"
 else
   TASK_RUNTIME="${DAILY_VLOG_RUNTIME:-${HOME}/Library/Caches/daily-vlog/v1}"

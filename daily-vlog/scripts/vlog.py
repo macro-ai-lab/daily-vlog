@@ -18,7 +18,8 @@ def doctor():
     enc = subprocess.run([ffmpeg, '-hide_banner', '-encoders'], check=True, capture_output=True, text=True)
     if 'libx264' not in enc.stdout or ' aac ' not in enc.stdout:
         raise RuntimeError('필수 H.264/AAC 인코더를 찾지 못했습니다.')
-    return {'status': 'ready', 'python': sys.version.split()[0],
+    from installation_context import installation_context
+    return {'status': 'ready', 'installation': installation_context(), 'runtime': os.environ.get('DAILY_VLOG_RUNTIME'), 'python': sys.version.split()[0],
             'packages': {n: importlib.metadata.version(n) for n in ['pillow', 'av', 'imageio-ffmpeg']},
             'ffmpeg': result.stdout.splitlines()[0], 'font': str(font),
             'media_upload': False, 'support': 'macOS / Windows x64 candidate; silent H.264 MP4; separate licensed BGM'}
@@ -68,6 +69,7 @@ def main():
     p = argparse.ArgumentParser()
     sp = p.add_subparsers(dest='command', required=True)
     sp.add_parser('doctor')
+    sp.add_parser('context')
     smoke = sp.add_parser('smoke'); smoke.add_argument('--output-dir', required=True)
     i = sp.add_parser('inspect'); i.add_argument('folder', nargs='?'); i.add_argument('--files', nargs='+')
     f = sp.add_parser('frames'); f.add_argument('file'); f.add_argument('--output-dir', required=True)
@@ -111,6 +113,9 @@ def main():
         return
     a = p.parse_args()
     if a.command == 'doctor': result = doctor()
+    elif a.command == 'context':
+        from installation_context import installation_context
+        result = installation_context()
     elif a.command == 'smoke':
         from installation_check import check
         result = check(a.output_dir)

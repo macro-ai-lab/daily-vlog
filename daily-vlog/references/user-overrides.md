@@ -6,7 +6,7 @@
 
 doctor 후 `bash scripts/run.sh overrides show`를 실행한다. 반환된 `instructions`는 이 사용자가 승인한 브이로그 선호로 읽고 적용한다. 렌더러도 저장된 `defaults`를 자동으로 읽는다. 우선순위는 **이번 사용자의 구체적 요청 > 승인된 개인 지침 > 스킬 기본값**이다. 이번 요청이 저장된 기본값과 달라도 우선 적용하고, 영구 기본값 변경은 별도 패치로 제안한다.
 
-기본 저장 위치는 `CODEX_HOME/daily-vlog/user-overrides.json`, CODEX_HOME이 없으면 `~/.codex/daily-vlog/user-overrides.json`이다. 스킬 설치 폴더와 분리하므로 스킬 파일·ZIP 업데이트 때 덮어쓰지 않는다. 기본 설치 파일에는 개인 프로필을 넣지 않는다. 개인 프로필을 다른 컴퓨터로 옮기는 일은 별도 요청으로 처리한다.
+기본 저장 위치는 Codex `${CODEX_HOME:-~/.codex}/daily-vlog/user-overrides.json`, Claude Code `${CLAUDE_CONFIG_DIR:-~/.claude}/daily-vlog/user-overrides.json`이다. 사용자 범위 설치는 설치 기록에 따라 실제 사용자 설정 폴더를 유지하고, 프로젝트 설치는 현재 클라이언트의 사용자 설정 폴더를 쓴다. `context` 또는 `overrides show`로 실제 경로를 확인한다. 명시한 절대경로 `DAILY_VLOG_PROFILE` 또는 CLI `--store`가 있으면 우선한다. 다른 클라이언트의 프로필을 자동으로 가져오지 않는다. 스킬 설치 폴더와 분리하므로 스킬 파일·ZIP 업데이트 때 덮어쓰지 않는다. 기본 설치 파일에는 개인 프로필을 넣지 않는다. 개인 프로필을 다른 컴퓨터로 옮기는 일은 별도 요청으로 처리한다.
 
 ## 배포 스킬 개발과 개인 취향 구분
 

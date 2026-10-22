@@ -11,8 +11,8 @@ from text_layout import validate_overlays
 
 
 def default_store_path():
-    codex = Path(os.environ.get('CODEX_HOME') or Path.home() / '.codex')
-    return codex / 'daily-vlog' / 'user-overrides.json'
+    from installation_context import installation_context
+    return Path(installation_context()['profile'])
 
 
 def digest(data):

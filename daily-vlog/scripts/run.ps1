@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $VlogArguments = @($args)
 if ($VlogArguments.Count -eq 0 -or $VlogArguments[0] -eq '--help') {
-    Write-Output 'daily-vlog: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
+    Write-Output 'daily-vlog: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
     return
 }
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw '이 실행기는 Windows용입니다.' }
@@ -10,13 +10,37 @@ $NativeArch = $env:PROCESSOR_ARCHITEW6432
 if (-not $NativeArch) { $NativeArch = $env:PROCESSOR_ARCHITECTURE }
 if ($NativeArch -ne 'AMD64') { throw '현재 Windows x64만 지원합니다. ARM/32비트는 지원하지 않습니다.' }
 $SkillDir = Split-Path $PSScriptRoot -Parent
+$SkillsDir = Split-Path $SkillDir -Parent
+$ContainerDir = Split-Path $SkillsDir -Parent
+$InstallMarker = Join-Path $SkillsDir '.daily-vlog-install'
+$InstallScope = 'source'
+$InstallClient = $env:AI_SKILL_CLIENT
+if (-not $InstallClient) { $InstallClient = 'codex' }
+if (Test-Path -LiteralPath $InstallMarker) {
+    $MarkerItem = Get-Item -LiteralPath $InstallMarker -Force
+    if ($MarkerItem.PSIsContainer -or ($MarkerItem.Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw '설치 기록이 파일이 아니거나 링크입니다.' }
+    $InstallData = [IO.File]::ReadAllLines($InstallMarker)
+    if ($InstallData.Count -ne 3 -or $InstallData[0] -ne 'skill-install-v1' -or $InstallData[1] -notin @('codex','claude-code') -or $InstallData[2] -notin @('project','user')) { throw '설치 기록 형식이 다릅니다.' }
+    $InstallClient = $InstallData[1]; $InstallScope = $InstallData[2]
+}
+elseif ((Split-Path $ContainerDir -Leaf) -eq '.claude') { $InstallClient = 'claude-code' }
+elseif ((Split-Path $ContainerDir -Leaf) -in @('.agents','.codex')) { $InstallClient = 'codex' }
+switch ($InstallClient) {
+    'claude-code' { $ConfigBase = $env:CLAUDE_CONFIG_DIR; if (-not $ConfigBase) { $ConfigBase = Join-Path $env:USERPROFILE '.claude' } }
+    'codex' { $ConfigBase = $env:CODEX_HOME; if (-not $ConfigBase) { $ConfigBase = Join-Path $env:USERPROFILE '.codex' } }
+    default { throw '설치 클라이언트를 확인할 수 없습니다.' }
+}
+if (-not (Test-Path -LiteralPath $InstallMarker) -and (Split-Path $SkillsDir -Leaf) -eq 'skills') {
+    if ([IO.Path]::GetFullPath($ContainerDir) -eq [IO.Path]::GetFullPath($ConfigBase)) { $InstallScope = 'user' }
+    elseif ((Split-Path $ContainerDir -Leaf) -in @('.agents','.claude')) { $InstallScope = 'project' }
+}
+if ($InstallScope -eq 'user') { $ConfigBase = $ContainerDir }
+if (-not [IO.Path]::IsPathRooted($ConfigBase)) { throw '클라이언트 설정 경로는 절대경로여야 합니다.' }
+$env:AI_SKILL_CLIENT = $InstallClient
+if (-not $env:DAILY_VLOG_PROFILE) { $env:DAILY_VLOG_PROFILE = Join-Path $ConfigBase 'daily-vlog\user-overrides.json' }
 $RuntimeDir = $env:DAILY_VLOG_RUNTIME
 if (-not $RuntimeDir) {
-    $ProjectRoot = Split-Path (Split-Path (Split-Path $SkillDir -Parent) -Parent) -Parent
-    $ProjectSkill = Join-Path $ProjectRoot '.agents\skills\daily-vlog'
-    if ([IO.Path]::GetFullPath($SkillDir) -eq [IO.Path]::GetFullPath($ProjectSkill)) {
-        $RuntimeDir = Join-Path $ProjectRoot '.daily-vlog-runtime\v1'
-    }
+    if ($InstallScope -eq 'project') { $RuntimeDir = Join-Path (Split-Path $ContainerDir -Parent) '.daily-vlog-runtime\v1' }
     else {
         if (-not $env:LOCALAPPDATA) { throw '사용자 LocalAppData 폴더를 찾지 못했습니다.' }
         $RuntimeDir = Join-Path $env:LOCALAPPDATA 'daily-vlog\v1'

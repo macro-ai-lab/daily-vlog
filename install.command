@@ -1,36 +1,48 @@
 #!/bin/bash
-# The agent selects the scope after checking the host and its allowed write roots.
 set -euo pipefail
 BUNDLE="$(cd "$(dirname "$0")" && pwd -P)"
 NAME="daily-vlog"
 SOURCE="$BUNDLE/$NAME"
 PROJECT=""
-case "${1:-}" in
-  --project)
-    [[ $# == 2 && -d "$2" ]] || { echo '기존 작업 폴더를 --project 뒤에 지정하세요.' >&2; exit 2; }
-    PROJECT="$(cd "$2" && pwd -P)"
-    SKILLS="$PROJECT/.agents/skills"
-    ;;
-  --user|'')
-    [[ $# -le 1 ]] || exit 2
-    SKILLS="${CODEX_HOME:-$HOME/.codex}/skills"
-    ;;
-  *) echo '설치 인수: --project 작업폴더 또는 --user. Codex가 환경과 권한을 확인해 선택합니다.' >&2; exit 2 ;;
+CLIENT="auto"
+SCOPE="user"
+SCOPE_SET=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --client) [[ $# -ge 2 ]] || exit 2; CLIENT="$2"; shift 2 ;;
+    --project)
+      [[ $# -ge 2 && -d "$2" && "$SCOPE_SET" == 0 ]] || { echo '기존 작업 폴더와 설치 범위를 확인하세요.' >&2; exit 2; }
+      PROJECT="$(cd "$2" && pwd -P)"; SCOPE="project"; SCOPE_SET=1; shift 2 ;;
+    --user) [[ "$SCOPE_SET" == 0 ]] || exit 2; SCOPE_SET=1; shift ;;
+    *) echo '에이전트가 --client codex|claude-code와 --project 작업폴더 또는 --user를 선택합니다.' >&2; exit 2 ;;
+  esac
+done
+if [[ "$CLIENT" == auto ]]; then CLIENT="${AI_SKILL_CLIENT:-}"; fi
+case "$CLIENT" in
+  codex) CLIENT_DIR='.agents'; CONFIG_BASE="${CODEX_HOME:-$HOME/.codex}" ;;
+  claude-code) CLIENT_DIR='.claude'; CONFIG_BASE="${CLAUDE_CONFIG_DIR:-$HOME/.claude}" ;;
+  *) echo '[CLIENT_REQUIRED] 현재 에이전트가 --client codex 또는 --client claude-code를 지정해야 합니다. 설치 파일은 만들지 않았습니다.' >&2; exit 2 ;;
 esac
+[[ "$CONFIG_BASE" == /* ]] || { echo '클라이언트 설정 폴더는 절대경로여야 합니다.' >&2; exit 2; }
+if [[ "$SCOPE" == project ]]; then
+  SKILLS="$PROJECT/$CLIENT_DIR/skills"
+else
+  SKILLS="$CONFIG_BASE/skills"
+fi
 [[ "$(uname -s)" == Darwin ]] || { echo 'README의 환경 분기를 따라 이 환경에 맞는 설치기를 사용하세요.' >&2; exit 2; }
 [[ -f "$SOURCE/SKILL.md" ]] || { echo '스킬 파일이 없습니다. 압축을 완전히 해제하세요.' >&2; exit 2; }
-# Reject links before creating anything beneath the installation root.
-for CHECK_PATH in "${PROJECT:+$PROJECT/.agents}" "$SKILLS"; do
-  [[ -z "$CHECK_PATH" || ! -L "$CHECK_PATH" ]] || { echo '설치 상위 경로가 링크입니다. 원래 위치를 확인하세요.' >&2; exit 2; }
+for CHECK_PATH in "${PROJECT:+$PROJECT/$CLIENT_DIR}" "$(dirname "$SKILLS")" "$SKILLS"; do
+  [[ ! -L "$CHECK_PATH" ]] || { echo '설치 상위 경로가 링크입니다. 원래 위치를 확인하세요.' >&2; exit 2; }
 done
 if ! mkdir -p "$SKILLS"; then
   echo '[INSTALL_PATH_DENIED] 설치 위치에 쓸 수 없습니다. README의 권한 진단을 따르세요.' >&2; exit 2
 fi
 TARGET="$SKILLS/$NAME"
-STAGE=""
-LOCK=""
+MARKER="$SKILLS/.$NAME-install"
+STAGE=""; LOCK=""; MARKER_TEMP=""
 cleanup() {
   [[ -z "$STAGE" || ! -d "$STAGE" ]] || rm -rf "$STAGE"
+  [[ -z "$MARKER_TEMP" || ! -f "$MARKER_TEMP" ]] || rm -f "$MARKER_TEMP"
   [[ -z "$LOCK" ]] || rmdir "$LOCK" 2>/dev/null || true
 }
 trap cleanup EXIT
@@ -38,6 +50,13 @@ if ! mkdir "$SKILLS/.$NAME-install.lock" 2>/dev/null; then
   echo '[INSTALL_LOCK_OR_PERMISSION] 다른 설치 또는 쓰기 권한을 확인하세요. 기존 잠금은 삭제하지 않았습니다.' >&2; exit 2
 fi
 LOCK="$SKILLS/.$NAME-install.lock"
+EXPECTED_MARKER="$(printf 'skill-install-v1\n%s\n%s\n' "$CLIENT" "$SCOPE")"
+if [[ -L "$MARKER" || ( -e "$MARKER" && ! -f "$MARKER" ) ]]; then
+  echo '[INSTALL_CONTEXT_CONFLICT] 설치 기록 경로가 파일이 아니거나 링크입니다.' >&2; exit 2
+fi
+if [[ -f "$MARKER" && "$(cat "$MARKER")" != "$EXPECTED_MARKER" ]]; then
+  echo '[INSTALL_CONTEXT_CONFLICT] 기존 설치 클라이언트 또는 범위가 다릅니다. 기록은 보존했습니다.' >&2; exit 2
+fi
 if [[ -e "$TARGET" || -L "$TARGET" ]]; then
   if [[ -L "$TARGET" || ! -d "$TARGET" ]] || ! diff -qr "$SOURCE" "$TARGET" >/dev/null; then
     echo '[EXISTING_SKILL_DIFFERS] 다른 버전 또는 수정본이 있습니다. 기존 파일은 보존했습니다.' >&2; exit 2
@@ -46,14 +65,18 @@ if [[ -e "$TARGET" || -L "$TARGET" ]]; then
 else
   STAGE="$(mktemp -d "$SKILLS/.$NAME-install.XXXXXX")"
   cp -R "$SOURCE/." "$STAGE/"
-  mv "$STAGE" "$TARGET"
-  STAGE=""
+  mv "$STAGE" "$TARGET"; STAGE=""
 fi
+if [[ ! -f "$MARKER" ]]; then
+  MARKER_TEMP="$(mktemp "$SKILLS/.$NAME-context.XXXXXX")"
+  printf 'skill-install-v1\n%s\n%s\n' "$CLIENT" "$SCOPE" > "$MARKER_TEMP"
+  mv "$MARKER_TEMP" "$MARKER"; MARKER_TEMP=""
+fi
+export AI_SKILL_CLIENT="$CLIENT"
 echo "스킬 파일 확인 완료: $TARGET"
+echo "설치 클라이언트: $CLIENT / 범위: $SCOPE"
 if [[ "$NAME" == daily-vlog ]]; then
-  if [[ -n "$PROJECT" ]]; then
-    export DAILY_VLOG_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT/.daily-vlog-runtime/v1}"
-  fi
+  if [[ -n "$PROJECT" ]]; then export DAILY_VLOG_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT/.daily-vlog-runtime/v1}"; fi
   if ! bash "$TARGET/scripts/run.sh" doctor; then
     echo '[RUNTIME_CHECK_FAILED] 스킬 파일은 복사됐지만 편집 도구 준비·점검이 실패했습니다. 위 오류를 확인하세요.' >&2; exit 1
   fi
@@ -63,6 +86,7 @@ if [[ "$NAME" == daily-vlog ]]; then
   fi
   echo '편집 도구와 테스트 영상 읽기 점검 완료. 에이전트의 이미지 열람 가능 여부는 별도로 확인하세요.'
 else
+  echo "개인 지침 위치: $CONFIG_BASE/naver-blog-draft/preferences.md"
   echo '스킬 파일 설치 완료. 컴퓨터 유즈·파일 첨부·로그인은 현재 채팅에서 별도로 확인하세요.'
 fi
 [[ -z "$PROJECT" ]] || echo "사용 범위: 이 프로젝트($PROJECT). 런타임과 개인 자료는 Git에 올리지 마세요."
