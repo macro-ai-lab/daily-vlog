@@ -16,6 +16,7 @@ import time
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 from media_runtime import probe as media_probe, ffmpeg_path, default_font
 from timelog_style import apply_timelog_defaults
+from text_layout import draw_overlay, prepare_overlays, font_paths
 
 
 def number(value, name, low, high):
@@ -57,7 +58,7 @@ def caption_style(style, font_path):
     return defaults
 
 
-def overlay_png(path, caption, font_path, style=None, time_label=None, timeline_mode=False, timeline_layout="split", timeline_offset_y=0, timeline_time_font_size=None, disclosure_label=""):
+def overlay_png(path, caption, font_path, style=None, time_label=None, timeline_mode=False, timeline_layout="split", timeline_offset_y=0, timeline_time_font_size=None, disclosure_label="", text_overlays=None):
     """Full-frame transparent type: small disclosure, quiet lower caption."""
     image = Image.new("RGBA", (1080, 1920))
     draw = ImageDraw.Draw(image)
@@ -65,6 +66,10 @@ def overlay_png(path, caption, font_path, style=None, time_label=None, timeline_
     if timeline_mode:
         style.setdefault("y",1500)
     settings = caption_style(style, font_path)
+    if text_overlays is not None:
+        return draw_overlay(path, caption, font_path, settings, time_label, timeline_mode,
+                            timeline_layout, timeline_offset_y, timeline_time_font_size,
+                            disclosure_label, text_overlays)
     if timeline_layout not in ("split", "center"):
         raise ValueError("timeline_layout must be split or center")
     if timeline_layout == "center" and not timeline_mode:
@@ -170,6 +175,10 @@ def main():
         raw_style.setdefault("y",1500)
     style = caption_style(raw_style, font)
     style["font"] = str(resolve(style["font"]))
+    overlays = [prepare_overlays(plan, shot, resolve) for shot in shots]
+    fonts = {font, resolve(style['font'])}
+    for config in overlays:
+        fonts.update(font_paths(config))
     music = plan.get("music")
     if music is not None:
         if not isinstance(music,dict):
@@ -180,7 +189,7 @@ def main():
         fade_out = number(music.get("fade_out", 1.2), "fade_out", 0, total)
         if fade_in + fade_out > total:
             raise ValueError("Music fades must not overlap")
-    inputs = {plan_path, font, resolve(style["font"])} | {resolve(s["source"]) for s in shots}
+    inputs = {plan_path, *fonts} | {resolve(s["source"]) for s in shots}
     if music is not None:
         inputs.add(resolve(music["source"]))
     if plan.get("source_manifest"):
@@ -204,7 +213,7 @@ def main():
         source_info = []
         for source in sorted(inputs):
             item = {"path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
-            if source != plan_path and source not in {font,resolve(style["font"])} and source.suffix.lower() != ".json":
+            if source != plan_path and source not in fonts and source.suffix.lower() != ".json":
                 item["probe"] = probe(source)
             source_info.append(item)
         metadata = {v["path"]: v.get("probe") for v in source_info}
@@ -227,7 +236,7 @@ def main():
             td = Path(td)
             for i, shot in enumerate(shots):
                 png, part = td / f"caption-{i}.png", td / f"part-{i}.mp4"
-                overlay_png(png, shot["caption"], font, style, shot.get("time_label"), timeline_mode, timeline_layout, shot.get("timeline_offset_y", 0), plan.get("timeline_time_font_size"), disclosure)
+                overlay_png(png, shot["caption"], font, style, shot.get("time_label"), timeline_mode, timeline_layout, shot.get("timeline_offset_y", 0), plan.get("timeline_time_font_size"), disclosure, overlays[i])
                 x0 = shot.get("crop_x", .5)
                 x1 = shot.get("crop_end_x", x0)
                 crop_expression = f"(iw-ow)*({x0}+({x1-x0})*min(t/{shot['duration']},1))"

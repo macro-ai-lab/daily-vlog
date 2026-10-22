@@ -24,17 +24,10 @@ def ffmpeg_path():
 
 
 def default_font():
-    import platform
-    import os
-    if platform.system() == 'Windows':
-        root = Path(os.environ.get('WINDIR', r'C:\Windows'))
-        candidates = [root / 'Fonts' / 'malgun.ttf', root / 'Fonts' / 'malgunbd.ttf']
-    else:
-        candidates = [Path('/System/Library/Fonts/AppleSDGothicNeo.ttc')]
-    for p in candidates:
-        if p.is_file():
-            return p
-    raise RuntimeError('한글 폰트를 찾지 못했습니다. 에이전트에게 설치된 한글 폰트 위치를 알려주세요.')
+    font = Path(__file__).resolve().parents[1] / 'assets/fonts/NotoSansKR-Regular.otf'
+    if not font.is_file():
+        raise RuntimeError('기본 Noto Sans KR 번들 폰트가 없습니다. 스킬 배포 파일을 확인하세요.')
+    return font
 
 
 def probe(path):
@@ -42,7 +35,7 @@ def probe(path):
         streams = []
         for stream in container.streams:
             codec = stream.codec_context
-            item = {'codec_type': stream.type, 'codec_name': codec.name,
+            item = {'codec_type': stream.type, 'codec_name': codec.name if codec is not None else None,
                     'index': stream.index, 'metadata': dict(stream.metadata)}
             if stream.duration is not None and stream.time_base is not None:
                 item['duration'] = str(float(stream.duration * stream.time_base))

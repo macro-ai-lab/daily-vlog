@@ -74,6 +74,15 @@ def main():
     s = sp.add_parser('survey'); s.add_argument('file'); s.add_argument('--output-dir', required=True)
     s.add_argument('--start', type=float, default=0); s.add_argument('--end', type=float)
     s.add_argument('--interval', type=float, default=30); s.add_argument('--max-frames', type=int, default=60)
+    c = sp.add_parser('customize'); c.add_argument('plan'); c.add_argument('--patch', required=True)
+    c.add_argument('--output', required=True); c.add_argument('--root', default='.')
+    fnt = sp.add_parser('font'); fnt.add_argument('--name', required=True); fnt.add_argument('--output-dir', required=True)
+    ov = sp.add_parser('overrides'); ovsp = ov.add_subparsers(dest='action', required=True)
+    show = ovsp.add_parser('show'); show.add_argument('--store')
+    proposal = ovsp.add_parser('propose'); proposal.add_argument('--patch', required=True)
+    proposal.add_argument('--request', required=True); proposal.add_argument('--output', required=True); proposal.add_argument('--store')
+    approve = ovsp.add_parser('save'); approve.add_argument('proposal'); approve.add_argument('--proposal-id', required=True)
+    approve.add_argument('--approval', required=True)
     r = sp.add_parser('render', add_help=False); r.add_argument('arguments', nargs=argparse.REMAINDER)
     if len(sys.argv) > 1 and sys.argv[1] == 'render':
         args = sys.argv[2:]
@@ -109,6 +118,21 @@ def main():
     elif a.command == 'survey':
         from survey import survey
         result = survey(a.file, a.output_dir, a.start, a.end, a.interval, a.max_frames)
+    elif a.command == 'customize':
+        from customize import customize
+        result = customize(a.plan, a.patch, a.output, a.root)
+    elif a.command == 'font':
+        from fonts import fetch_font
+        result = fetch_font(a.name, a.output_dir)
+    elif a.command == 'overrides':
+        from overrides import default_store_path, load_profile, propose, save
+        if a.action == 'show':
+            result = {'store': str(Path(a.store) if a.store else default_store_path()),
+                      'profile': load_profile(a.store)}
+        elif a.action == 'propose':
+            result = propose(a.patch, a.request, a.output, a.store)
+        else:
+            result = save(a.proposal, a.proposal_id, a.approval)
     elif a.command == 'frames':
         info = probe(a.file); duration = float(info['format']['duration'])
         output = Path(a.output_dir).expanduser(); output.mkdir(parents=True, exist_ok=False)

@@ -2,7 +2,7 @@
 
 아이폰 등으로 찍은 일상 영상을 Codex와 함께 짧은 세로 타임로그로 편집하는 스킬입니다.
 
-[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v008.1/daily-vlog-skill-v008.1.zip) · [v008.1 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v008.1)
+[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v014/daily-vlog-skill-v014.zip) · [v014 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v014)
 
 **영상 확인 → 콘티 확인 → 자막·스타일 선택 → 시안 제작 → 수정** 순서로 진행합니다. 설치 명령과 편집 계획은 Codex가 다루며, 사용자는 영상과 원하는 느낌을 말하면 됩니다.
 
@@ -16,7 +16,7 @@
 
 Codex가 [설치 절차](INSTALLATION.md)에 따라 환경·허용 경로·기존 설치를 확인하고 맞는 설치기를 실행합니다. 프로젝트에 설치하면 편집 도구도 그 프로젝트 안에 준비하며, 이후에도 같은 프로젝트에서 사용합니다. 설치 과정에 필요한 접근 승인은 앱 안내에 따라 확인합니다.
 
-ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v008.1/daily-vlog-skill-v008.1.zip)**을 풀고 폴더를 Codex에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex 설치·로그인과 이용 요금은 별개입니다.
+ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v014/daily-vlog-skill-v014.zip)**을 풀고 폴더를 Codex에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex 설치·로그인과 이용 요금은 별개입니다.
 
 설치는 **파일 배치 → 편집 도구 점검 → 테스트 영상 생성·읽기 → 에이전트 이미지 열람 확인**으로 구분해 보고합니다. 실행 도구 자체가 실패하거나 이미지 열람을 확인하지 못하면 전체 준비 완료라고 하지 않습니다. [검증 범위](INSTALLATION-VALIDATION.md)를 참고하세요.
 
@@ -31,7 +31,8 @@ ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/
 - 원본 길이에 관계없이 약 2초의 핵심 구간으로 구성하는 타임로그. 1초 원본은 늘리지 않고 사용합니다.
 - 긴 영상은 간격별로 훑은 뒤 후보 구간을 자세히 확인합니다. 샘플 사이의 짧은 행동은 빠질 수 있습니다.
 - 실제 촬영시각이 확인된 경우 시간 자막을 사용합니다. 모르는 시각을 임의로 만들지 않습니다.
-- 기본 자막은 Pretendard SemiBold, 1080×1920 기준 시간 54px·문장 52px, 흰색 글씨와 검은 테두리입니다.
+- 기본 자막은 Noto Sans KR Regular, 1080×1920 기준 시간 54px·문장 52px, 흰색 글씨와 검은 테두리입니다.
+- 제목·시간·문장 위치와 폰트·크기를 말로 수정할 수 있습니다. 반복할 선호는 변경안을 확인받은 뒤 스킬 밖의 개인 지침으로 저장하고, 이번 요청 > 개인 지침 > 배포 기본값 순서로 적용합니다.
 - 1080×1920, 24fps, H.264 MP4 출력. 현재 기본 렌더 범위는 4~20컷·총 10~40초이며 이보다 짧은 구성은 범위 조정이 필요합니다. 길이를 맞추려고 장면을 반복하지 않습니다.
 - 사용 범위가 확인된 별도 음악 파일을 넣을 수 있습니다. 없으면 무음 시안으로 제작하며 음악 자동 검색 기능은 없습니다.
 
@@ -55,9 +56,17 @@ ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/
 - `daily-vlog/scripts/`: 환경 준비·분석·편집 코드
 - `daily-vlog/runtime/`: 고정한 모듈 버전과 다운로드 해시
 - `daily-vlog/references/`: 편집 계획·기본 스타일·지원 범위
-- `daily-vlog/assets/fonts/`: Pretendard 폰트와 SIL OFL 1.1 라이선스
+- `daily-vlog/assets/fonts/`: Noto Sans KR 기본 폰트·Pretendard 호환 폰트와 각 SIL OFL 1.1 라이선스
 - 루트의 설치기와 `시작하기.txt`
 
 개인 영상, 완성 영상, 계정 인증 정보, 설치된 Python과 도구 캐시는 포함하지 않습니다. 예제 스톡 영상과 음악도 별도로 준비해야 합니다. 원본 영상과 개인 자료는 저장소 밖에 보관하세요.
 
-폰트 저작권과 이용 조건은 [폰트 라이선스](daily-vlog/assets/fonts/LICENSE.txt)를 참고하세요. 이 폰트는 시스템에 설치하지 않고 파일로 사용합니다.
+폰트 저작권과 이용 조건은 [Noto Sans KR 라이선스](daily-vlog/assets/fonts/NotoSansKR-LICENSE.txt)와 [Pretendard 라이선스](daily-vlog/assets/fonts/LICENSE.txt)를 참고하세요. 이 폰트는 시스템에 설치하지 않고 파일로 사용합니다.
+
+## Claude에서 사용하기
+
+`SKILL.md`와 Python 편집 코드는 Agent Skills 형식을 따르지만 **현재 자동 설치기는 Codex용**입니다. Claude Code는 `.claude/skills`의 스킬을 인식하므로 설치 위치, 실행 권한, 개인 지침 경로와 런타임 경로를 해당 환경에 맞추면 편집 코드를 재사용할 수 있습니다. Claude Code에서 설치·실행 검증은 아직 하지 않았습니다.
+
+일반 Claude 채팅이나 Cowork에 이 배포 ZIP을 올리는 것만으로 동작한다고 보장하지 않습니다. 현재 런처는 macOS/Windows x64용이므로 실제 실행 환경, 네트워크, 이미지 열람·로컬 파일 도구를 별도로 확인해야 합니다. 네이버 블로그 스킬은 브라우저·파일 첨부 도구도 필요합니다. 클라이언트별 권한을 자동으로 추가하지 않습니다.
+
+근거: [Claude Code 스킬 형식과 설치 범위](https://code.claude.com/docs/en/skills), [Claude 실행 환경의 차이](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview).

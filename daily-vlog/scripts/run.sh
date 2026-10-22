@@ -3,7 +3,7 @@
 set -euo pipefail
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
 if [[ "${1:-}" == "--help" || $# == 0 ]]; then
-  echo '일상 브이로그: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
+  echo '일상 브이로그: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
   exit 0
 fi
 if [[ "$(uname -s)" != Darwin ]]; then

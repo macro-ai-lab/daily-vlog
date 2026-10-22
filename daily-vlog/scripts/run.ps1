@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $VlogArguments = @($args)
 if ($VlogArguments.Count -eq 0 -or $VlogArguments[0] -eq '--help') {
-    Write-Output 'daily-vlog: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | render PLAN --root DIR --output FILE --poster FILE'
+    Write-Output 'daily-vlog: setup | doctor | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
     return
 }
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw '이 실행기는 Windows용입니다.' }
