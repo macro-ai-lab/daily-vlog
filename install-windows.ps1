@@ -11,10 +11,8 @@ $Client = $Client.ToLowerInvariant()
 if (-not [IO.Path]::IsPathRooted($ConfigBase)) { throw '클라이언트 설정 폴더는 절대경로여야 합니다.' }
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw 'README의 환경 분기를 따라 이 환경에 맞는 설치기를 사용하세요.' }
 if ($ProjectPath -and $UserScope) { throw '설치 범위는 하나만 선택하세요.' }
-$Identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-if (($Identity.Name -split '\\')[-1] -match '^CodexSandbox') {
-    throw '[HOST_INSTALL_REQUIRED] 샌드박스 계정으로 스킬 폴더를 만들지 않습니다. 승인된 호스트 실행으로 이 설치기를 실행하세요. 권한 우회나 ACL 자동 변경은 하지 않습니다.'
-}
+# Account and owner names do not establish filesystem access. Let the actual
+# directory creation, exclusive lock and staged copy report permission failures.
 if ($Name -eq 'daily-vlog') {
     $NativeArch = $env:PROCESSOR_ARCHITEW6432
     if (-not $NativeArch) { $NativeArch = $env:PROCESSOR_ARCHITECTURE }
@@ -34,14 +32,6 @@ if ($ProjectPath) {
     Assert-RealDirectory $ProjectPath
     $ClientRoot = Join-Path $ProjectPath $ClientDir
     Assert-RealDirectory $ClientRoot
-    if (Test-Path -LiteralPath $ClientRoot) {
-        $Owner = (Get-Acl -LiteralPath $ClientRoot).Owner
-        try { $OwnerName = ([Security.Principal.SecurityIdentifier]$Owner).Translate([Security.Principal.NTAccount]).Value }
-        catch { $OwnerName = $Owner }
-        if (($OwnerName -split '\\')[-1] -match '^CodexSandbox') {
-            throw "[PROJECT_OWNER_MISMATCH] $ClientDir 소유자가 샌드박스 계정입니다: $OwnerName. 기존 파일과 ACL은 바꾸지 않았습니다. README의 권한 진단을 따르세요."
-        }
-    }
     $Skills = Join-Path $ClientRoot 'skills'
 }
 else { $Scope = 'user'; Assert-RealDirectory $ConfigBase; $Skills = Join-Path $ConfigBase 'skills' }

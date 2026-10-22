@@ -1,6 +1,36 @@
 ﻿# Windows x64; private runtime only, no administrator or persistent PATH changes.
 $ErrorActionPreference = 'Stop'
 $VlogArguments = @($args)
+function Receive-RuntimeArchive([string]$Uri, [string]$Destination) {
+    if (-not $Uri.StartsWith('https://', [StringComparison]::OrdinalIgnoreCase)) { throw 'HTTPS 다운로드 주소가 필요합니다.' }
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri $Uri -OutFile $Destination -TimeoutSec 180
+        return
+    }
+    catch {
+        $WebFailure = $_
+        # Optional existing Python fallback for restricted Windows Schannel
+        # accounts. This Python only downloads uv; uv prepares the edit runtime.
+        $PythonCommand = Get-Command python.exe -CommandType Application -All -ErrorAction SilentlyContinue |
+            Where-Object { $_.Source -and $_.Source -notlike '*\WindowsApps\*' } | Select-Object -First 1
+        if (-not $PythonCommand) {
+            throw "[RUNTIME_DOWNLOAD_FAILED] Windows HTTPS 다운로드 실패. 대체 다운로드에 사용할 기존 Python도 없습니다. $($WebFailure.Exception.Message)"
+        }
+        Write-Host "Windows HTTPS 다운로드 실패: $($WebFailure.Exception.Message)"
+        Write-Host '기존 Python의 인증서 검증 HTTPS로 재시도합니다. 다운로드 뒤 SHA256도 검증합니다.'
+        $DownloadCode = @'
+import shutil, ssl, sys, urllib.request
+with urllib.request.urlopen(sys.argv[1], context=ssl.create_default_context(), timeout=60) as response:
+    if not response.geturl().lower().startswith('https://'):
+        raise ValueError('HTTPS redirect required')
+    with open(sys.argv[2], 'wb') as output:
+        shutil.copyfileobj(response, output)
+'@
+        try { & $PythonCommand.Source -I -c $DownloadCode $Uri $Destination }
+        catch { throw "[RUNTIME_DOWNLOAD_FAILED] 기존 Python 실행 실패: $($_.Exception.Message). Windows HTTPS 원인: $($WebFailure.Exception.Message)" }
+        if ($LASTEXITCODE -ne 0) { throw "[RUNTIME_DOWNLOAD_FAILED] Python 다운로드 재시도 실패 (종료 코드 $LASTEXITCODE). Windows HTTPS 원인: $($WebFailure.Exception.Message)" }
+    }
+}
 if ($VlogArguments.Count -eq 0 -or $VlogArguments[0] -eq '--help') {
     Write-Output 'daily-vlog: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
     return
@@ -82,9 +112,9 @@ if ($VlogArguments[0] -eq 'setup' -or -not $Ready) {
             [IO.Directory]::CreateDirectory($DownloadDir) | Out-Null
             $Archive = Join-Path $DownloadDir 'uv.zip'
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/astral-sh/uv/releases/download/0.13.1/uv-x86_64-pc-windows-msvc.zip' -OutFile $Archive -TimeoutSec 180
+            Receive-RuntimeArchive 'https://github.com/astral-sh/uv/releases/download/0.13.1/uv-x86_64-pc-windows-msvc.zip' $Archive
             $Expected = '3b2661a463a5baea7f5076ea2b25ab71d77f36a6c0d809e5350651792f80a672'
-            if ((Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $Expected) { throw '설치 파일 해시가 다릅니다. 실행하지 않고 중단합니다.' }
+            if ((Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $Expected) { throw '[ARCHIVE_HASH_MISMATCH] 설치 파일 해시가 다릅니다. 실행하지 않고 중단합니다.' }
             Expand-Archive -LiteralPath $Archive -DestinationPath (Join-Path $DownloadDir 'expanded')
             $Candidates = @(Get-ChildItem -LiteralPath (Join-Path $DownloadDir 'expanded') -Filter 'uv.exe' -File -Recurse)
             if ($Candidates.Count -ne 1) { throw 'uv 실행 파일을 하나로 확인하지 못했습니다.' }
