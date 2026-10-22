@@ -65,6 +65,8 @@ ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/
 
 ## Claude에서 사용하기
 
+[환경별 실제 점검 결과](COMPATIBILITY.md)를 먼저 확인하세요. **현재 자동 설치 요청은 Codex용입니다.**
+
 `SKILL.md`와 Python 편집 코드는 Agent Skills 형식을 따르지만 **현재 자동 설치기는 Codex용**입니다. Claude Code는 `.claude/skills`의 스킬을 인식하므로 설치 위치, 실행 권한, 개인 지침 경로와 런타임 경로를 해당 환경에 맞추면 편집 코드를 재사용할 수 있습니다. Claude Code에서 설치·실행 검증은 아직 하지 않았습니다.
 
 일반 Claude 채팅이나 Cowork에 이 배포 ZIP을 올리는 것만으로 동작한다고 보장하지 않습니다. 현재 런처는 macOS/Windows x64용이므로 실제 실행 환경, 네트워크, 이미지 열람·로컬 파일 도구를 별도로 확인해야 합니다. 네이버 블로그 스킬은 브라우저·파일 첨부 도구도 필요합니다. 클라이언트별 권한을 자동으로 추가하지 않습니다.
