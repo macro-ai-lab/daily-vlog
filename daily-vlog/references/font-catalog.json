@@ -1,0 +1,86 @@
+[
+  {
+    "id": "pretendard",
+    "family": "Pretendard",
+    "weight": "SemiBold",
+    "font": "assets/fonts/Pretendard-SemiBold.otf",
+    "license": "assets/fonts/LICENSE.txt",
+    "role": "information",
+    "aliases": [
+      "Pretendard",
+      "프리텐다드"
+    ],
+    "source": "https://github.com/orioncactus/pretendard",
+    "sha256": "c89bc43027dc7cde5726e96223376f8eec09302b2fc1f8147fd5b57cfc376118",
+    "license_sha256": "b04538c9abec39a3db75108cf0af0fd9c77032fe8aa2cf38345b4d250e98e38e"
+  },
+  {
+    "id": "suit",
+    "family": "SUIT",
+    "weight": "SemiBold",
+    "font": "assets/fonts/SUIT-SemiBold.ttf",
+    "license": "assets/fonts/SUIT-LICENSE.txt",
+    "role": "information",
+    "aliases": [
+      "SUIT",
+      "수트"
+    ],
+    "source": "https://github.com/sun-typeface/SUIT",
+    "sha256": "8d202e0341b9426b653c1b3d36b2c0d1f4b482a7dfa83baaccf84d355d688fbd",
+    "license_sha256": "30d101ee3c35ef629d622d933d261a27b2f60223e0a3b0f36791e569c2b9daa9",
+    "download_source": "https://raw.githubusercontent.com/sun-typeface/SUIT/55118d981336d8fce005eb62888c12c0568ef7b0/fonts/static/ttf/SUIT-SemiBold.ttf"
+  },
+  {
+    "id": "maru-buri",
+    "family": "MaruBuri",
+    "weight": "SemiBold",
+    "font": "assets/fonts/MaruBuri-SemiBold.ttf",
+    "license": "assets/fonts/MaruBuri-LICENSE.txt",
+    "role": "vlog",
+    "aliases": [
+      "Maru Buri",
+      "마루 부리",
+      "마루부리"
+    ],
+    "source": "https://hangeul.naver.com/font",
+    "sha256": "2d86f0b4950955fb69f069c415d01a51bbbbcf03682d59a6adab7f5b05d16fe5",
+    "license_sha256": "999613fca03b29d584aa59dfc642d6ed3a22719592dd6b54e9cc0899ac6f2dee",
+    "download_source": "https://hangeul.naver.com/hangeul_static/webfont/zips/maruburi.zip",
+    "archive_sha256": "73136e8ddf83c0ef7bd807efeec06393d6d7678487d53672dff9ec93f71d1bd0",
+    "archive_member": "MaruBuriTTF.zip!MaruBuri-SemiBold.ttf",
+    "license_source": "https://help.naver.com/service/30016/contents/18088?osType=PC&lang=ko"
+  },
+  {
+    "id": "gowun-batang",
+    "family": "Gowun Batang",
+    "weight": "Bold",
+    "font": "assets/fonts/GowunBatang-Bold.ttf",
+    "license": "assets/fonts/GowunBatang-OFL.txt",
+    "role": "vlog",
+    "aliases": [
+      "Gowun Batang",
+      "고운바탕"
+    ],
+    "source": "https://github.com/yangheeryu/Gowun-Batang",
+    "sha256": "dbfcaa646e5831e7478524924f02906f550285a5050699b4e38c9950b3ec4b94",
+    "license_sha256": "49a57cc769fa9affd6eefb9070a61e3d3f6b757c97cafb15848bc6d1c81acc78",
+    "download_source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/gowunbatang/GowunBatang-Bold.ttf"
+  },
+  {
+    "id": "black-han-sans",
+    "family": "Black Han Sans",
+    "weight": "Regular",
+    "font": "assets/fonts/BlackHanSans-Regular.ttf",
+    "license": "assets/fonts/BlackHanSans-OFL.txt",
+    "role": "emphasis",
+    "aliases": [
+      "Black Han Sans",
+      "검은고딕"
+    ],
+    "source": "https://github.com/zesstype/Black-Han-Sans",
+    "sha256": "31960809284026681774a8e52dc19ebcad26cf69b0ad9d560f288296fbb52739",
+    "license_sha256": "c324192c8b3a988bae45a9a7e4ac1258b684739003bda114e0523423440457c9",
+    "download_source": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/blackhansans/BlackHanSans-Regular.ttf",
+    "note": "Headline font with limited character coverage; verify actual text."
+  }
+]

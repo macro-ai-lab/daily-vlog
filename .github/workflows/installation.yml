@@ -48,7 +48,23 @@ jobs:
         shell: bash
         run: |
           python -B _maintenance/skill-distribution/scripts/distribute.py check --repo . --archive install-test.zip
-          python -B _maintenance/skill-distribution/scripts/smoke_matrix.py --archive install-test.zip --client "${{ matrix.client }}" --report install-result.json
+          python -B _maintenance/skill-distribution/scripts/smoke_matrix.py --archive install-test.zip --client "${{ matrix.client }}" --report install-result.json --work-directory install-work
+      - name: Test installed image storyboard, fonts and MP4 agreement
+        shell: bash
+        env:
+          TEST_CLIENT: ${{ matrix.client }}
+        run: |
+          python - <<'PYTEST'
+          import os, pathlib, subprocess
+          work = pathlib.Path('install-work').resolve()
+          project = work / 'project 작업 폴더'
+          runtime = project / '.daily-vlog-runtime/v1/venv'
+          python = runtime / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
+          folder = '.claude' if os.environ['TEST_CLIENT'] == 'claude-code' else '.agents'
+          skill = project / folder / 'skills/daily-vlog'
+          env = dict(os.environ, DAILY_VLOG_TEST_SKILL=str(skill))
+          subprocess.run([str(python), '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_daily_vlog_storyboard.py', '-v'], env=env, check=True)
+          PYTEST
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -9,8 +9,22 @@ from PIL import ImageFont
 
 
 def fetch_font(name, output_dir):
+    skill = Path(__file__).resolve().parents[1]
+    catalog = json.loads((skill / 'references/font-catalog.json').read_text(encoding='utf-8'))
+    requested = name.strip().casefold()
+    for entry in catalog:
+        if requested not in {entry['id'], *(alias.casefold() for alias in entry['aliases'])}:
+            continue
+        font, license_file = skill / entry['font'], skill / entry['license']
+        if (hashlib.sha256(font.read_bytes()).hexdigest() != entry['sha256'] or
+                hashlib.sha256(license_file.read_bytes()).hexdigest() != entry['license_sha256']):
+            raise ValueError('Bundled font/license changed; inspect the installation before reuse')
+        if ImageFont.truetype(str(font), 52).getname()[0] != entry['family']:
+            raise ValueError('Bundled font family differs from the catalog')
+        return {**entry, 'font': str(font), 'license': str(license_file),
+                'bundled': True, 'font_index': 0}
     if name.strip().casefold() not in ('noto sans kr', 'noto-sans-kr', '구글 고딕', '구글고딕', '본고딕'):
-        raise ValueError('Supported download: Noto Sans KR. Other fonts need a verified local file/source.')
+        raise ValueError('Select Noto Sans KR, Pretendard, SUIT, Maru Buri, Gowun Batang, or Black Han Sans. Other fonts need a verified local file/source.')
     directory = Path(output_dir).expanduser().resolve()
     # The user-selected font is stored in the work folder, never installed system-wide.
     font = directory / 'NotoSansKR.ttf'

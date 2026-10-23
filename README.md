@@ -2,9 +2,9 @@
 
 아이폰 등으로 찍은 일상 영상을 Codex 또는 Claude Code와 함께 짧은 세로 타임로그로 편집하는 스킬입니다.
 
-[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v017/daily-vlog-skill-v017.zip) · [v017 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v017)
+[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v018/daily-vlog-skill-v018.zip) · [v018 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v018)
 
-**영상 확인 → 콘티 확인 → 자막·스타일 선택 → 시안 제작 → 수정** 순서로 진행합니다. 설치 명령과 편집 계획은 에이전트가 다루며, 사용자는 영상과 원하는 느낌을 말하면 됩니다.
+**영상 확인 → 글 콘티 피드백 → 실제 프레임 이미지 콘티·스타일 확인 → 시안 제작 → 수정** 순서로 진행합니다. 설치 명령과 편집 계획은 에이전트가 다루며, 사용자는 영상과 원하는 느낌을 말하면 됩니다.
 
 ## 설치
 
@@ -16,7 +16,7 @@
 
 에이전트가 [설치 절차](INSTALLATION.md)에 따라 환경·허용 경로·기존 설치를 확인하고 맞는 설치기를 실행합니다. 프로젝트에 설치하면 편집 도구도 그 프로젝트 안에 준비하며, 이후에도 같은 프로젝트에서 사용합니다. 설치 과정에 필요한 접근 승인은 앱 안내에 따라 확인합니다.
 
-ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v017/daily-vlog-skill-v017.zip)**을 풀고 폴더를 현재 에이전트에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex·Claude Code 설치·로그인과 이용 요금은 별개입니다.
+ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v018/daily-vlog-skill-v018.zip)**을 풀고 폴더를 현재 에이전트에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex·Claude Code 설치·로그인과 이용 요금은 별개입니다.
 
 Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않고 실제 파일 작업 결과를 확인합니다. 기본 Windows HTTPS 다운로드가 실패하면 이미 설치된 실제 Python으로 인증서 검증을 유지해 재시도합니다. **기본 HTTPS도 실패하고 기존 Python도 없으면 현재 자동 설치를 완료할 수 없습니다.** 다운로드 해시 검증과 기존 설치·개인 지침 보호는 유지합니다. 사용자가 별도 CMD를 실행한 것을 자동 설치 성공으로 처리하지 않습니다.
 
@@ -27,6 +27,16 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 > 이 영상들로 브이로그 만들어줘. 먼저 분석하고 콘티부터 보여줘.
 
 큰 영상은 채팅에 다시 올릴 필요 없이 로컬 경로로 전달할 수 있습니다. 휴대폰에만 있는 원본은 먼저 편집 컴퓨터로 옮겨야 합니다. 기존 수정본·다른 버전은 자동 덮어쓰지 않습니다.
+
+## 이미지 콘티로 먼저 확인하기
+
+글 콘티에 피드백을 주면 실제 영상 프레임에 자막·시간·제목을 얹은 이미지 콘티를 보여줍니다. 컷 번호를 보며 “2번 설명을 위로”, “시간은 가운데 고정”, “첫 컷 제목만 크게”처럼 수정하고, 확인한 디자인으로 영상 시안을 만듭니다. 전체 콘티·개별 원본 크기 스틸·배치 검토용 안내선 버전을 제공합니다. 이미지 확인과 같은 스타일 승인을 반복하지 않습니다.
+
+정보 전달용 Pretendard·SUIT, 감성 브이로그용 마루 부리·고운바탕, 짧은 강조용 검은고딕을 라이선스와 함께 포함합니다. 시스템 폰트 설치 없이 선택할 수 있습니다. 기존 Noto Sans KR 기본값과 개인 지침은 유지합니다. [글꼴·배치 안내](daily-vlog/references/typography.md) · [이미지 콘티 안내](daily-vlog/references/visual-storyboard.md)
+
+![용도별 실제 폰트 비교](daily-vlog/assets/font-comparison.png)
+
+이미지 콘티는 배치 확인용입니다. 움직임·전환·음악은 영상에서 따로 확인합니다. 현재 자막 애니메이션·두 줄 설명·반투명 자막 박스는 지원하지 않습니다.
 
 ## 현재 편집 기능
 
@@ -44,7 +54,7 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 | --- | --- |
 | macOS 14 이상 · Apple Silicon | 같은 Mac의 빈 전용 캐시에서 두 클라이언트 경로의 자동 설치·영상 읽기 검증. 이전 배포의 10초 렌더 검증 |
 | Intel Mac | 코드 경로 제공, 실제 장치 검증 전 |
-| Windows 10/11 x64 | 사용자 전달 수정 소스 시험에서 샌드박스 계정 설치·빈 캐시 준비·테스트 영상 읽기 성공. 기존 Python 대체 다운로드 사용. 최종 v017 ZIP 실기 재시험은 별도 |
+| Windows 10/11 x64 | 사용자 전달 수정 소스 시험에서 샌드박스 계정 설치·빈 캐시 준비·테스트 영상 읽기 성공. 기존 Python 대체 다운로드 사용. 최종 v018 ZIP의 설치·도구 검사는 아래 CI 결과와 구분하고 실제 에이전트 세션 재시험은 별도 |
 | Windows ARM/32비트 · Linux | 미지원 |
 | 아이폰·아이패드 단독 실행 | 미지원. 편집할 Mac/PC 필요 |
 
@@ -58,7 +68,7 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 - `daily-vlog/scripts/`: 환경 준비·분석·편집 코드
 - `daily-vlog/runtime/`: 고정한 모듈 버전과 다운로드 해시
 - `daily-vlog/references/`: 편집 계획·기본 스타일·지원 범위
-- `daily-vlog/assets/fonts/`: Noto Sans KR 기본 폰트·Pretendard 호환 폰트와 각 SIL OFL 1.1 라이선스
+- `daily-vlog/assets/fonts/`: Noto Sans KR 기본 폰트와 용도별 선택 폰트·각 SIL OFL 1.1 라이선스
 - 루트의 설치기와 `시작하기.txt`
 
 개인 영상, 완성 영상, 계정 인증 정보, 설치된 Python과 도구 캐시는 포함하지 않습니다. 예제 스톡 영상과 음악도 별도로 준비해야 합니다. 원본 영상과 개인 자료는 저장소 밖에 보관하세요.
@@ -71,7 +81,7 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 
 설치 기록으로 다음 실행에서도 클라이언트와 범위를 찾습니다. 개인 지침은 각 클라이언트의 설정 폴더 안, 스킬 폴더 밖에 따로 보존합니다. 다른 클라이언트의 개인 지침을 자동으로 가져오거나 설정 파일·전역 PATH를 바꾸지 않습니다.
 
-일반 Claude 채팅·Cowork는 이번 자동 설치 대상에 포함하지 않습니다. [환경별 점검 결과](COMPATIBILITY.md)에서 자동 설치 코드 검증과 실제 클라이언트 실행 검증을 구분해 확인하세요. 실제 Claude Code의 스킬 탐색·호출, 최종 배포 ZIP의 Windows 실행·새 채팅·다른 계정 및 네이버 실계정 작업은 아직 검증 전입니다.
+일반 Claude 채팅·Cowork는 이번 자동 설치 대상에 포함하지 않습니다. [환경별 점검 결과](COMPATIBILITY.md)에서 자동 설치 코드 검증과 실제 클라이언트 실행 검증을 구분해 확인하세요. 실제 Claude Code의 스킬 탐색·호출, 새 채팅·다른 계정 및 네이버 실계정 작업은 별도 검증 대상입니다. ZIP의 OS별 설치와 이미지 콘티·렌더 검사는 GitHub Actions 결과로 확인합니다.
 
 근거: [Claude Code 스킬 설치 범위](https://code.claude.com/docs/en/skills), [Claude Code 설정 폴더](https://code.claude.com/docs/en/claude-directory).
 

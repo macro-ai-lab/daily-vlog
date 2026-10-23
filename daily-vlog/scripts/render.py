@@ -117,17 +117,11 @@ def overlay_png(path, caption, font_path, style=None, time_label=None, timeline_
     image.save(path)
 
 
-def main():
-    p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("plan", type=Path)
-    p.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    p.add_argument("--output", type=Path, required=True)
-    p.add_argument("--poster", type=Path, required=True)
-    p.add_argument("--shared-lock", type=Path, required=True, help="Existing common lock, opened rb; contents never changed")
-    a = p.parse_args()
-    root = a.root.resolve()
+def prepare_plan(plan_path, root):
+    """Resolve and validate the same layout/inputs for stills and MP4 rendering."""
+    root = Path(root).resolve()
+    plan_path = (root / plan_path).resolve()
     resolve = lambda v: (root / v).resolve()
-    plan_path, output, poster = resolve(a.plan), resolve(a.output), resolve(a.poster)
     plan = apply_timelog_defaults(json.loads(plan_path.read_text()))
     shots = plan["shots"]
     if not 4 <= len(shots) <= 20:
@@ -194,6 +188,40 @@ def main():
         inputs.add(resolve(music["source"]))
     if plan.get("source_manifest"):
         inputs.add(resolve(plan["source_manifest"]))
+    return dict(plan=plan, plan_path=plan_path, shots=shots, source_kind=source_kind,
+                disclosure=disclosure, total=total, timeline_mode=timeline_mode,
+                timeline_layout=timeline_layout, font=font, style=style,
+                overlays=overlays, fonts=fonts, music=music, inputs=inputs)
+
+
+def shot_base_filter(shot):
+    """Shared trim-relative crop trajectory, raster size, and frame rate."""
+    x0 = shot.get("crop_x", .5)
+    x1 = shot.get("crop_end_x", x0)
+    crop = f"(iw-ow)*({x0}+({x1-x0})*min(t/{shot['duration']},1))"
+    return ("setpts=PTS-STARTPTS,scale=1080:1920:force_original_aspect_ratio=increase,"
+            f"crop=1080:1920:x='{crop}':y=(ih-oh)/2,setsar=1,fps=24")
+
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("plan", type=Path)
+    p.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    p.add_argument("--output", type=Path, required=True)
+    p.add_argument("--poster", type=Path, required=True)
+    p.add_argument("--shared-lock", type=Path, required=True, help="Existing common lock, opened rb; contents never changed")
+    a = p.parse_args()
+    root = a.root.resolve()
+    resolve = lambda v: (root / v).resolve()
+    plan_path, output, poster = resolve(a.plan), resolve(a.output), resolve(a.poster)
+    prepared = prepare_plan(plan_path, root)
+    plan, shots = prepared['plan'], prepared['shots']
+    disclosure, total = prepared['disclosure'], prepared['total']
+    timeline_mode, timeline_layout = prepared['timeline_mode'], prepared['timeline_layout']
+    font, style, overlays = prepared['font'], prepared['style'], prepared['overlays']
+    fonts, music, inputs = prepared['fonts'], prepared['music'], prepared['inputs']
+    if music is not None:
+        fade_in, fade_out = music.get('fade_in', .6), music.get('fade_out', 1.2)
     sidecars = {key: output.with_suffix(ext) for key, ext in {"plan": ".plan.json", "source": ".source.json", "report": ".report.json", "log": ".render.log"}.items()}
     destinations = [output, poster, *sidecars.values()]
     if len(set(destinations)) != len(destinations):
@@ -237,10 +265,7 @@ def main():
             for i, shot in enumerate(shots):
                 png, part = td / f"caption-{i}.png", td / f"part-{i}.mp4"
                 overlay_png(png, shot["caption"], font, style, shot.get("time_label"), timeline_mode, timeline_layout, shot.get("timeline_offset_y", 0), plan.get("timeline_time_font_size"), disclosure, overlays[i])
-                x0 = shot.get("crop_x", .5)
-                x1 = shot.get("crop_end_x", x0)
-                crop_expression = f"(iw-ow)*({x0}+({x1-x0})*min(t/{shot['duration']},1))"
-                graph = f"[0:v]setpts=PTS-STARTPTS,scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920:x='{crop_expression}':y=(ih-oh)/2,setsar=1,fps=24[base];[base][1:v]overlay=0:0:format=auto,format=yuv420p[v]"
+                graph = f"[0:v]{shot_base_filter(shot)}[base];[base][1:v]overlay=0:0:format=auto,format=yuv420p[v]"
                 run([ffmpeg,"-hide_banner","-nostdin","-y","-ss",str(shot["start"]),"-i",str(resolve(shot["source"])),"-loop","1","-i",str(png),"-filter_complex",graph,"-map","[v]","-an","-frames:v",str(round(shot["duration"]*24)),"-c:v","libx264","-preset","fast","-crf","20","-threads","4","-color_primaries","bt709","-color_trc","bt709","-colorspace","bt709",str(part)])
             concat = td / "concat.txt"
             concat.write_text("".join(f"file 'part-{i}.mp4'\n" for i in range(len(shots))))

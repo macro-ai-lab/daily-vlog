@@ -78,6 +78,8 @@ def main():
     s.add_argument('--interval', type=float, default=30); s.add_argument('--max-frames', type=int, default=60)
     c = sp.add_parser('customize'); c.add_argument('plan'); c.add_argument('--patch', required=True)
     c.add_argument('--output', required=True); c.add_argument('--root', default='.')
+    sb = sp.add_parser('storyboard'); sb.add_argument('plan'); sb.add_argument('--root', default='.')
+    sb.add_argument('--output-dir', required=True)
     fnt = sp.add_parser('font'); fnt.add_argument('--name', required=True); fnt.add_argument('--output-dir', required=True)
     ov = sp.add_parser('overrides'); ovsp = ov.add_subparsers(dest='action', required=True)
     show = ovsp.add_parser('show'); show.add_argument('--store')
@@ -126,6 +128,9 @@ def main():
     elif a.command == 'customize':
         from customize import customize
         result = customize(a.plan, a.patch, a.output, a.root)
+    elif a.command == 'storyboard':
+        from storyboard import storyboard
+        result = storyboard(a.plan, a.output_dir, a.root)
     elif a.command == 'font':
         from fonts import fetch_font
         result = fetch_font(a.name, a.output_dir)
