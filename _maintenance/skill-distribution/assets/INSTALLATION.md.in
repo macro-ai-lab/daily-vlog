@@ -1,0 +1,13 @@
+# 설치를 진행하는 에이전트에게
+
+현재 세션이 Codex인지 로컬 Claude Code인지 먼저 확인하고 설치기에 각각 `codex` 또는 `claude-code`를 명시한다. 설치된 실행 파일 이름으로 현재 클라이언트를 추측하지 않는다. macOS와 네이티브 Windows x64가 대상이며 WSL·일반 Claude 채팅·Cowork·모바일 단독 실행은 이 계약의 대상 밖이다. 사용자에게 OS별 명령을 고르게 하지 않는다.
+
+현재 작업 폴더를 명시했다면 그 프로젝트 범위에 설치한다. Codex 프로젝트는 `.agents/skills`, Claude Code 프로젝트는 `.claude/skills`다. 사용자 범위는 Codex `${CODEX_HOME:-~/.codex}/skills`, Claude Code `${CLAUDE_CONFIG_DIR:-~/.claude}/skills`다. 사용자 설정 폴더는 절대경로를 사용한다. 기존 설치·개인 지침은 보존하고 중복 설치하지 않는다.
+
+macOS는 `bash install.command --client CLIENT --project PROJECT`, Windows는 `powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File install-windows.ps1 -Client CLIENT -ProjectPath PROJECT`를 실제 절대경로 인수로 실행한다. 사용자가 모든 프로젝트에 설치하도록 요청했고 허용된 경로라면 각각 `--user`, `-UserScope`를 사용한다. 정책 허용은 해당 프로세스에만 적용한다.
+
+계정 또는 폴더 소유자 이름이 CodexSandbox라는 이유만으로 거부하지 않는다. 실제 생성·쓰기·잠금 결과로 판단한다. 실제 권한 오류가 났을 때만 앱의 승인된 실행 경로를 사용하고, 없으면 실패 경로·단계를 보고한다. 사용자 CMD 수동 실행을 자동 설치 성공으로 세지 않는다. ACL·소유권·전역 PATH·시스템 정책을 바꾸지 않는다.
+
+파일 설치와 사용 가능 여부를 구분한다. distribution.json의 runtime이 없으면 파일/설치 기록과 도구 가용성을 확인한다. runtime이 있으면 doctor, 사용자 자료를 쓰지 않는 smoke, 실제 이미지 열람, 열람 후 후속 명령을 각각 확인한다. 자동 보고의 agent_image_view: not_checked는 유지하고 실제 열람을 별도 기록한다. 새 채팅의 스킬 인식과 다른 계정 접근은 별도 검증이다. 스킬 목록이 갱신되지 않을 때만 같은 프로젝트의 새 채팅을 안내한다.
+
+Windows 기본 HTTPS가 실패하면 검증된 런타임은 기존 실제 Python의 인증서 검증 HTTPS를 선택적으로 사용할 수 있다. WindowsApps 스토어 바로가기는 제외하고 Python을 -I로 실행하며 최종 HTTPS와 고정 SHA256을 검증한다. Python이 없는 환경까지 해결했다고 표시하지 않는다. 명령 실행 전 setup refresh 실패는 설치기·영상 오류와 구분한다.

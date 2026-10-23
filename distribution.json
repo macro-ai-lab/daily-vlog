@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "policy_version": "2026-10-23.1",
+  "name": "daily-vlog",
+  "repository": "https://github.com/macro-ai-lab/daily-vlog",
+  "version": "v017",
+  "archive": "daily-vlog-skill-v017.zip",
+  "clients": [
+    "codex",
+    "claude-code"
+  ],
+  "platforms": [
+    "macos",
+    "windows-x64"
+  ],
+  "profile": "daily-vlog/user-overrides.json",
+  "runtime": {
+    "env": "DAILY_VLOG_RUNTIME",
+    "project_cache": ".daily-vlog-runtime/v1",
+    "user_cache": "daily-vlog/v1",
+    "macos_launcher": "scripts/run.sh",
+    "windows_launcher": "scripts/run.ps1"
+  },
+  "include": [
+    "daily-vlog",
+    "README.md",
+    "INSTALLATION.md",
+    "COMPATIBILITY.md",
+    "INSTALLATION-VALIDATION.md",
+    "시작하기.txt",
+    "install.command",
+    "install-windows.ps1",
+    "install-windows.cmd",
+    "distribution.json",
+    "AGENTS.md",
+    "_maintenance",
+    ".github",
+    ".gitattributes",
+    ".gitignore",
+    "tests"
+  ]
+}

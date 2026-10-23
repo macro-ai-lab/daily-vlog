@@ -1,0 +1,13 @@
+{
+  "policy_version": "2026-10-23.1",
+  "projects": [
+    {
+      "name": "daily-vlog",
+      "repository": "https://github.com/macro-ai-lab/daily-vlog"
+    },
+    {
+      "name": "naver-blog-draft",
+      "repository": "https://github.com/macro-ai-lab/naver-blog-draft"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 아이폰 등으로 찍은 일상 영상을 Codex 또는 Claude Code와 함께 짧은 세로 타임로그로 편집하는 스킬입니다.
 
-[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v016/daily-vlog-skill-v016.zip) · [v016 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v016)
+[설치 ZIP 다운로드](https://github.com/macro-ai-lab/daily-vlog/releases/download/v017/daily-vlog-skill-v017.zip) · [v017 배포 안내](https://github.com/macro-ai-lab/daily-vlog/releases/tag/v017)
 
 **영상 확인 → 콘티 확인 → 자막·스타일 선택 → 시안 제작 → 수정** 순서로 진행합니다. 설치 명령과 편집 계획은 에이전트가 다루며, 사용자는 영상과 원하는 느낌을 말하면 됩니다.
 
@@ -16,7 +16,7 @@
 
 에이전트가 [설치 절차](INSTALLATION.md)에 따라 환경·허용 경로·기존 설치를 확인하고 맞는 설치기를 실행합니다. 프로젝트에 설치하면 편집 도구도 그 프로젝트 안에 준비하며, 이후에도 같은 프로젝트에서 사용합니다. 설치 과정에 필요한 접근 승인은 앱 안내에 따라 확인합니다.
 
-ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v016/daily-vlog-skill-v016.zip)**을 풀고 폴더를 현재 에이전트에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex·Claude Code 설치·로그인과 이용 요금은 별개입니다.
+ZIP을 사용하는 경우에도 **[설치 ZIP](https://github.com/macro-ai-lab/daily-vlog/releases/download/v017/daily-vlog-skill-v017.zip)**을 풀고 폴더를 현재 에이전트에 전달해 같은 문장으로 요청하면 됩니다. 설치 파일을 운영체제별로 직접 고를 필요가 없습니다. 공개 다운로드에는 GitHub 계정이 필요 없으며 Codex·Claude Code 설치·로그인과 이용 요금은 별개입니다.
 
 Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않고 실제 파일 작업 결과를 확인합니다. 기본 Windows HTTPS 다운로드가 실패하면 이미 설치된 실제 Python으로 인증서 검증을 유지해 재시도합니다. **기본 HTTPS도 실패하고 기존 Python도 없으면 현재 자동 설치를 완료할 수 없습니다.** 다운로드 해시 검증과 기존 설치·개인 지침 보호는 유지합니다. 사용자가 별도 CMD를 실행한 것을 자동 설치 성공으로 처리하지 않습니다.
 
@@ -44,7 +44,7 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 | --- | --- |
 | macOS 14 이상 · Apple Silicon | 같은 Mac의 빈 전용 캐시에서 두 클라이언트 경로의 자동 설치·영상 읽기 검증. 이전 배포의 10초 렌더 검증 |
 | Intel Mac | 코드 경로 제공, 실제 장치 검증 전 |
-| Windows 10/11 x64 | 사용자 전달 수정 소스 시험에서 샌드박스 계정 설치·빈 캐시 준비·테스트 영상 읽기 성공. 기존 Python 대체 다운로드 사용. 최종 v016 ZIP 실기 재시험은 별도 |
+| Windows 10/11 x64 | 사용자 전달 수정 소스 시험에서 샌드박스 계정 설치·빈 캐시 준비·테스트 영상 읽기 성공. 기존 Python 대체 다운로드 사용. 최종 v017 ZIP 실기 재시험은 별도 |
 | Windows ARM/32비트 · Linux | 미지원 |
 | 아이폰·아이패드 단독 실행 | 미지원. 편집할 Mac/PC 필요 |
 
@@ -74,3 +74,7 @@ Windows에서는 계정·폴더 소유자 이름만으로 설치를 막지 않�
 일반 Claude 채팅·Cowork는 이번 자동 설치 대상에 포함하지 않습니다. [환경별 점검 결과](COMPATIBILITY.md)에서 자동 설치 코드 검증과 실제 클라이언트 실행 검증을 구분해 확인하세요. 실제 Claude Code의 스킬 탐색·호출, 최종 배포 ZIP의 Windows 실행·새 채팅·다른 계정 및 네이버 실계정 작업은 아직 검증 전입니다.
 
 근거: [Claude Code 스킬 설치 범위](https://code.claude.com/docs/en/skills), [Claude Code 설정 폴더](https://code.claude.com/docs/en/claude-directory).
+
+## 설치기 유지보수
+
+두 프로젝트는 같은 [설치·배포 스킬](_maintenance/skill-distribution/SKILL.md)과 템플릿을 사용합니다. 새 기능을 배포할 때도 네 경우의 설치와 최종 ZIP을 검사합니다. 사용자는 이 관리 스킬을 별도로 설치할 필요가 없습니다. [GitHub 설치 검사](https://github.com/macro-ai-lab/daily-vlog/actions/workflows/installation.yml)는 macOS·Windows 네이티브에서 Codex·Claude Code용 경로의 프로젝트/사용자 설치를 검사합니다. 실제 에이전트 세션의 스킬 인식·이미지 열람·계정 작업 검증과는 구분합니다.

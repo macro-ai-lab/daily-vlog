@@ -2,6 +2,7 @@
 set -euo pipefail
 BUNDLE="$(cd "$(dirname "$0")" && pwd -P)"
 NAME="daily-vlog"
+HAS_RUNTIME=true
 SOURCE="$BUNDLE/$NAME"
 PROJECT=""
 CLIENT="auto"
@@ -75,8 +76,12 @@ fi
 export AI_SKILL_CLIENT="$CLIENT"
 echo "스킬 파일 확인 완료: $TARGET"
 echo "설치 클라이언트: $CLIENT / 범위: $SCOPE"
-if [[ "$NAME" == daily-vlog ]]; then
-  if [[ -n "$PROJECT" ]]; then export DAILY_VLOG_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT/.daily-vlog-runtime/v1}"; fi
+if [[ "$HAS_RUNTIME" == true ]]; then
+  if [[ -n "$PROJECT" ]]; then
+    export DAILY_VLOG_RUNTIME="${DAILY_VLOG_RUNTIME:-$PROJECT/.daily-vlog-runtime/v1}"
+  else
+    export DAILY_VLOG_RUNTIME="${DAILY_VLOG_RUNTIME:-$HOME/Library/Caches/daily-vlog/v1}"
+  fi
   if ! bash "$TARGET/scripts/run.sh" doctor; then
     echo '[RUNTIME_CHECK_FAILED] 스킬 파일은 복사됐지만 편집 도구 준비·점검이 실패했습니다. 위 오류를 확인하세요.' >&2; exit 1
   fi
@@ -86,7 +91,7 @@ if [[ "$NAME" == daily-vlog ]]; then
   fi
   echo '편집 도구와 테스트 영상 읽기 점검 완료. 에이전트의 이미지 열람 가능 여부는 별도로 확인하세요.'
 else
-  echo "개인 지침 위치: $CONFIG_BASE/naver-blog-draft/preferences.md"
+  echo "개인 지침 위치: $CONFIG_BASE/daily-vlog/user-overrides.json"
   echo '스킬 파일 설치 완료. 컴퓨터 유즈·파일 첨부·로그인은 현재 채팅에서 별도로 확인하세요.'
 fi
 [[ -z "$PROJECT" ]] || echo "사용 범위: 이 프로젝트($PROJECT). 런타임과 개인 자료는 Git에 올리지 마세요."

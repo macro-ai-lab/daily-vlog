@@ -72,7 +72,7 @@ Windows HTTPS도 실패하고 기존 Python도 없으면 이 대체 경로는 �
 | --- | --- |
 | `setup refresh had errors` | Codex의 샌드박스 준비 로그. `.agents` 소유권/보호 ACL 실패와 런타임 파일 잠금은 별개 후보이며 문구 하나로 원인을 확정하지 않는다. |
 | `CLIENT_REQUIRED` / `INSTALL_CONTEXT_CONFLICT` | 현재 에이전트의 클라이언트 인수와 기존 설치 기록을 확인한다. 다른 클라이언트로 덮어쓰지 않는다. |
-| `INSTALL_PATH_DENIED` / `INSTALL_LOCK_OR_PERMISSION` | 실제 실패한 경로와 생성·쓰기·잠금 오류, 허용 범위를 확인한다. 기존 ACL을 보존한다. 이전 v015의 `HOST_INSTALL_REQUIRED` / `PROJECT_OWNER_MISMATCH`는 계정 이름에 따른 선제 차단으로, v016은 사용하지 않는다. |
+| `INSTALL_PATH_DENIED` / `INSTALL_LOCK_OR_PERMISSION` | 실제 실패한 경로와 생성·쓰기·잠금 오류, 허용 범위를 확인한다. 기존 ACL을 보존한다. 이전 v015의 `HOST_INSTALL_REQUIRED` / `PROJECT_OWNER_MISMATCH`는 계정 이름에 따른 선제 차단으로, 공통 템플릿은 사용하지 않는다. |
 | `RUNTIME_DOWNLOAD_FAILED` / `SEC_E_NO_CREDENTIALS` | 기본 Windows HTTPS와 선택적 기존 Python 대체 경로의 결과를 확인한다. Python이 없으면 대체 경로를 사용할 수 없다. 인증서 검증은 유지한다. |
 | `ARCHIVE_HASH_MISMATCH` | 고정 해시와 다운로드 파일이 달라 실행 전에 중단한다. 해시를 임의로 바꾸지 않는다. |
 | `RUNTIME_CHECK_FAILED` | 실제 Python/모듈/폰트/FFmpeg 오류. 파일 복사 성공과 분리한다. |
@@ -83,3 +83,7 @@ Windows HTTPS도 실패하고 기존 Python도 없으면 이 대체 경로는 �
 설치기의 파일 작업 실패와 Codex 자체의 샌드박스 준비 오류를 구분한다. 사용자 전달 Windows 실기 결과는 해당 PC의 수정 소스 시험이며 최종 배포 ZIP, 새 채팅·다른 계정·Python 없는 환경까지 검증한 결과로 확대하지 않는다.
 
 근거: [Claude Code 스킬](https://code.claude.com/docs/en/skills), [Claude Code 설정 폴더](https://code.claude.com/docs/en/claude-directory), [로컬 스킬 검색 범위](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills), [Windows 샌드박스 문제 해결](https://learn.chatgpt.com/docs/windows/windows-sandbox#troubleshooting-and-faq).
+
+## 유지보수 계약
+
+설치기는 distribution.json과 `_maintenance/skill-distribution`의 공통 템플릿에서 생성합니다. 정책 변경 시 등록된 모든 프로젝트를 동기화하고 누락을 검사합니다. 일반 사용자의 설치는 이 문서를 따르며 관리용 스킬 설치가 선행 조건이 아닙니다. 설치 계정 이름으로 선제 거부하지 않습니다.

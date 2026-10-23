@@ -1,0 +1,9 @@
+# @NAME@
+
+설치 버전: @VERSION@. 파일과 명령 실행을 지원하는 Codex 또는 로컬 Claude Code에서 아래 내용을 보내세요.
+
+> @REPOSITORY@
+>
+> README를 읽고 현재 작업 폴더에 설치해줘. 내 환경과 실제 폴더 권한에 맞게 진행하고 기존 파일과 개인 지침을 보존해줘. 설치 후 사용 가능한 도구까지 점검해줘.
+
+에이전트가 macOS/Windows와 Codex/Claude Code를 선택합니다. 사용자가 OS별 설치 파일이나 명령을 고를 필요가 없습니다. 현재 기능과 검증 범위는 SKILL.md, COMPATIBILITY.md, INSTALLATION-VALIDATION.md에서 확인합니다. 설치 과정만으로 계정 로그인이나 외부 앱 도구 권한이 생기지 않습니다.

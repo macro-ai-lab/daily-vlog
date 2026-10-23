@@ -1,0 +1,57 @@
+name: Installation matrix
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check the contract and build one shared candidate ZIP
+        run: |
+          python -B _maintenance/skill-distribution/scripts/distribute.py check --repo .
+          python -B _maintenance/skill-distribution/scripts/distribute.py package --repo . --output install-test.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: install-package
+          path: install-test.zip
+          if-no-files-found: error
+  install:
+    needs: package
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+        client: [codex, claude-code]
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: install-package
+      - name: Check archive bytes and test the same ZIP on the native OS
+        shell: bash
+        run: |
+          python -B _maintenance/skill-distribution/scripts/distribute.py check --repo . --archive install-test.zip
+          python -B _maintenance/skill-distribution/scripts/smoke_matrix.py --archive install-test.zip --client "${{ matrix.client }}" --report install-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installation-${{ matrix.os }}-${{ matrix.client }}
+          path: install-result.json
+          if-no-files-found: warn

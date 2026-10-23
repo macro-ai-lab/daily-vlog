@@ -1,0 +1,3 @@
+interface:
+  display_name: "스킬 설치·배포 관리"
+  short_description: "Mac·Windows와 Codex·Claude Code의 자동 설치 및 배포 검증"

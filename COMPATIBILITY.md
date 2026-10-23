@@ -1,6 +1,6 @@
 # daily-vlog 실행 환경과 설치 검증
 
-점검일: 2026-10-22. 대상: daily-vlog v016. 네이버 블로그 배포본은 이번 변경 대상이 아니며 v0.1.4를 유지합니다. 자동 설치 클라이언트는 Codex와 로컬 Claude Code입니다.
+점검일: 2026-10-23. 대상: daily-vlog v017. 같은 공통 설치 정책을 naver-blog-draft v0.1.5에도 적용했습니다. 자동 설치 클라이언트는 Codex와 로컬 Claude Code입니다.
 
 | 환경 | 확인한 근거와 결과 | 남은 검증 |
 | --- | --- | --- |
@@ -32,3 +32,9 @@
 일반 설치 경로는 기존 Python이 필요 없습니다. Windows 기본 HTTPS가 실패한 경우 대체 다운로드는 이미 있는 실제 Python을 사용합니다. **기본 HTTPS도 실패하고 Python도 없는 PC는 현재 해결되지 않았습니다.** 인증서 검증을 끄거나 Python 스토어 바로가기를 실행하지 않습니다. Python 없는 Windows와 정상 Windows HTTPS 경로의 실제 장치 검증, 다른 계정·새 채팅 접근 검증이 남아 있습니다.
 
 공식 문서: [Codex 로컬 스킬](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills), [Codex Windows 샌드박스 진단](https://learn.chatgpt.com/docs/windows/windows-sandbox#troubleshooting-and-faq), [Claude Code 스킬](https://code.claude.com/docs/en/skills).
+
+## 공통 설치 정책 2026-10-23.1
+
+2026-10-23 사용자가 v016 재시험에서 한 번에 설치된 것으로 추가 보고했습니다. 세부 검사 로그까지 새로 전달된 것은 아니므로 현재 세션의 모든 단계·새 채팅·다른 계정의 성공을 의미하지 않습니다. v017은 제품 제작 로직을 바꾸지 않고 공통 생성기·등록 프로젝트 검사·네 경우 GitHub OS 검사를 추가합니다. Windows 실제 에이전트 세션 보고와 CI의 실제 OS 설치·런타임 검사는 구분합니다.
+
+CI는 Python이 있는 검사 프로세스에서 시작하지만 제품 설치 자식 프로세스의 PATH에서 별도 Python·Git을 제외하고 빈 프로젝트 캐시를 사용합니다. Windows 기본 HTTPS가 정상인 Python 없는 설치 경로를 검사할 수 있습니다. 제한된 계정의 기본 HTTPS까지 실패하는 경우 기존 Python 대체 경로에 대한 알려진 한계는 유지합니다. macOS의 시스템 기본 도구는 제거하지 않습니다. 실제 결과는 해당 커밋의 GitHub Installation matrix와 아티팩트에서 확인합니다.
