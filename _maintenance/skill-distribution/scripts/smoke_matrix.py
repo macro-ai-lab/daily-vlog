@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 import platform
 import shutil
 import subprocess
@@ -12,6 +12,17 @@ import sys
 import tempfile
 import time
 import zipfile
+
+
+def bootstrap_path(env, is_windows):
+    if not is_windows:
+        return '/usr/bin:/bin:/usr/sbin:/sbin'
+    # os.environ is case-insensitive on Windows; dict(os.environ) is not.
+    system_root = next((value for key, value in env.items() if key.upper() == 'SYSTEMROOT'), None)
+    if not system_root:
+        raise ValueError('Windows SystemRoot is unavailable')
+    system_root = PureWindowsPath(system_root)
+    return ';'.join(map(str, (system_root / 'System32', system_root, system_root / 'System32/WindowsPowerShell/v1.0')))
 
 
 def run(command, env, work, label, expected=0):
@@ -36,7 +47,7 @@ def execute(archive, client, work, report_path):
     for key in ('AI_SKILL_CLIENT', 'DAILY_VLOG_RUNTIME', 'DAILY_VLOG_PROFILE'): env.pop(key, None)
     if runtime: env.pop(runtime['env'], None)
     # The harness has Python; the product bootstrap does not inherit it.
-    env['PATH'] = (os.pathsep.join([str(Path(env['SystemRoot']) / 'System32'), env['SystemRoot'], str(Path(env['SystemRoot']) / 'System32/WindowsPowerShell/v1.0')]) if is_windows else '/usr/bin:/bin:/usr/sbin:/sbin')
+    env['PATH'] = bootstrap_path(env, is_windows)
     report['bootstrap_python_on_path'] = shutil.which('python.exe' if is_windows else 'python3', path=env['PATH']) is not None
     env.update(CODEX_HOME=str(work / 'Codex 개인 설정'), CLAUDE_CONFIG_DIR=str(work / 'Claude 개인 설정'))
     cfg = Path(env['CLAUDE_CONFIG_DIR' if client == 'claude-code' else 'CODEX_HOME'])
@@ -98,11 +109,16 @@ def main():
     p.add_argument('--report', required=True); p.add_argument('--work-directory')
     a = p.parse_args()
     archive = Path(a.archive).resolve(); report = Path(a.report).resolve()
-    if a.work_directory:
-        work = Path(a.work_directory).resolve(); work.mkdir(parents=True, exist_ok=False)
-        result = execute(archive, a.client, work, report)
-    else:
-        with tempfile.TemporaryDirectory(prefix='skill-install-') as td: result = execute(archive, a.client, Path(td), report)
+    try:
+        if a.work_directory:
+            work = Path(a.work_directory).resolve(); work.mkdir(parents=True, exist_ok=False)
+            result = execute(archive, a.client, work, report)
+        else:
+            with tempfile.TemporaryDirectory(prefix='skill-install-') as td: result = execute(archive, a.client, Path(td), report)
+    except Exception as exc:
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(json.dumps({'status': 'failed', 'os': platform.system(), 'client': a.client, 'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'error': str(exc)}, ensure_ascii=False, indent=2), encoding='utf-8')
+        raise
     print(json.dumps({'name': result['name'], 'os': result['os'], 'client': result['client'], 'status': result['status'], 'frontend_session': result['frontend_session']}))
 
 

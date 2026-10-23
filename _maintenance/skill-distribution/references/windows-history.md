@@ -25,3 +25,7 @@ Windows 런처는 Invoke-WebRequest를 먼저 사용한다. 실패 시 PATH의 �
 setup refresh had errors 또는 Failed to create unified exec process로 명령 자체가 시작되지 않으면 앱 준비 단계다. 설치기 선제 차단·Python·실제 영상 디코드·에이전트 이미지 열람과 혼동하지 않는다. 문구 하나로 ACL이나 파일 잠금 원인을 확정하지 않는다. 읽기 허용된 setup_error.json과 해당 시점 로그의 실패 경로/OS 오류만 확인하고 인증·전체 개인 로그를 배포하지 않는다.
 
 파일 복사 → doctor → 테스트 영상 인코딩·디코딩·프레임 추출 → 이미지 직접 열람 → 후속 명령을 각각 기록한다. 자동 agent_image_view: not_checked를 덮어쓰지 않는다. 새 채팅의 스킬 인식과 다른 계정의 파일 접근은 별도 검사다. 목록이 갱신되지 않을 때만 새 채팅을 안내하며 무조건 재설치를 반복하지 않는다.
+
+## 4. 검사 프로그램의 Windows 환경변수
+
+첫 네이티브 Windows CI에서 검사 프로그램이 dict(os.environ)의 SystemRoot 키를 찾지 못해 설치기 실행 전에 실패했다. Windows os.environ은 대소문자를 구분하지 않지만 일반 dict는 구분한다. 실제 키를 대소문자 없이 찾아 제한된 PATH를 구성하고 그 함수를 회귀 검사한다. 이 실패를 제품 설치·권한 실패로 보고하지 않는다. Windows/Unix의 경로 정렬 차이도 패키지 지문에 들어가지 않도록 POSIX 문자열 순서로 해시한다. 실패한 CI는 구조화된 오류 아티팩트도 남긴다.

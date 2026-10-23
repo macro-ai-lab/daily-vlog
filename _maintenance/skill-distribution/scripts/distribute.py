@@ -44,7 +44,7 @@ def read_manifest(repo):
 
 
 def tree_files(folder):
-    return sorted(p for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc')
+    return sorted((p for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix != '.pyc'), key=lambda p: str(p.relative_to(folder)).replace(os.sep, '/'))
 
 
 def tree_hash(folder):
