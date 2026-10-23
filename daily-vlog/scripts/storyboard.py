@@ -1,4 +1,4 @@
-"""Source-backed visual storyboard using the MP4 crop and text compositor."""
+"""Optional actual-frame style preview; illustrated storyboards use the session image tool."""
 import hashlib
 import json
 from pathlib import Path

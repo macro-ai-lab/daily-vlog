@@ -1,4 +1,4 @@
-"""Exercise real frame extraction, layout edits, and MP4/still agreement."""
+"""Check the optional actual-frame style preview, layout edits and MP4 agreement."""
 import copy
 import json
 import os
@@ -54,7 +54,11 @@ class StoryboardTests(unittest.TestCase):
 
     def test_real_stills_fixed_clock_guides_and_no_overwrite(self):
         original = self.path.read_bytes()
-        result = storyboard(self.path, self.work / 'board', self.work)
+        env = dict(os.environ, DAILY_VLOG_PROFILE=str(self.work/'no-profile.json'), PYTHONUTF8='1')
+        run = subprocess.run([sys.executable, str(SKILL/'scripts/vlog.py'), 'style-preview', str(self.path),
+                              '--root', str(self.work), '--output-dir', str(self.work/'board')],
+                             env=env, check=True, capture_output=True, text=True, encoding='utf-8', timeout=60)
+        result = json.loads(run.stdout)
         report = json.loads(Path(result['manifest']).read_text(encoding='utf-8'))
         self.assertEqual(len(report['shots']), 4)
         self.assertFalse(result['video_rendered'])

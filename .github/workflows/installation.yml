@@ -49,7 +49,7 @@ jobs:
         run: |
           python -B _maintenance/skill-distribution/scripts/distribute.py check --repo . --archive install-test.zip
           python -B _maintenance/skill-distribution/scripts/smoke_matrix.py --archive install-test.zip --client "${{ matrix.client }}" --report install-result.json --work-directory install-work
-      - name: Test installed image storyboard, fonts and MP4 agreement
+      - name: Test installed optional frame preview, fonts and MP4 agreement
         shell: bash
         env:
           TEST_CLIENT: ${{ matrix.client }}

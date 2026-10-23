@@ -3,8 +3,8 @@
   "policy_version": "2026-10-23.1",
   "name": "daily-vlog",
   "repository": "https://github.com/macro-ai-lab/daily-vlog",
-  "version": "v018",
-  "archive": "daily-vlog-skill-v018.zip",
+  "version": "v019",
+  "archive": "daily-vlog-skill-v019.zip",
   "clients": [
     "codex",
     "claude-code"
