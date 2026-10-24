@@ -67,6 +67,35 @@ class HistoryTests(unittest.TestCase):
             self.assertEqual(cached['by_format'], summary)
             self.assertEqual(len(list((self.store/'records').glob('*.json'))), 3)
 
+    def test_new_content_types_and_editing_methods_need_no_code_changes(self):
+        self.data.update(edit_format='comparison', content_type='shopping_review', content_type_label='쇼핑 후기')
+        self.plan.write_text(json.dumps(self.data), encoding='utf-8')
+        entry = record(self.output, self.plan, store=self.store)
+        summary = show(store=self.store)
+        self.assertEqual(summary['by_type']['shopping_review']['label'], '쇼핑 후기')
+        self.assertEqual(summary['by_format']['comparison']['production_count'], 1)
+        feedback(entry['id'], 'accepted', '이 구매 후기 좋다', store=self.store)
+        self.assertEqual(show(store=self.store, content_type='shopping_review')['by_type']['shopping_review']['accepted_production_count'], 1)
+        second = self.root/'travel.mp4'; second.write_bytes(self.output.read_bytes())
+        record(second, self.plan, 'timelog', self.store, 'trip', 'travel_review', '여행 후기')
+        third = self.root/'ad.mp4'; third.write_bytes(self.output.read_bytes())
+        record(third, self.plan, 'demonstration', self.store, 'ad', 'advertisement', '광고')
+        self.assertEqual(set(show(store=self.store)['by_type']), {'shopping_review', 'travel_review', 'advertisement'})
+        self.assertEqual(show(store=self.store, content_type='unknown_new_type')['by_type']['unknown_new_type']['production_count'], 0)
+        self.assertEqual(len(list((self.store/'records').glob('*.json'))), 3)
+        with self.assertRaises(ValueError): record(self.output, self.plan, '../unsafe', self.store)
+
+    def test_legacy_records_keep_bytes_and_classification(self):
+        entry = record(self.output, self.plan, store=self.store)
+        path = self.store/'records'/(entry['id']+'.json')
+        old = json.loads(path.read_text(encoding='utf-8'))
+        old.pop('content_type'); old.pop('content_type_label')
+        path.write_text(json.dumps(old), encoding='utf-8'); original = path.read_bytes()
+        summary = show(store=self.store)
+        self.assertEqual(summary['by_type']['story']['production_count'], 1)
+        self.assertEqual(summary['by_format']['story']['production_count'], 1)
+        self.assertEqual(path.read_bytes(), original)
+
     def test_invalid_render_and_auto_do_not_create_history(self):
         self.output.write_bytes(b'not a video')
         with self.assertRaises(Exception): record(self.output, self.plan, store=self.store)

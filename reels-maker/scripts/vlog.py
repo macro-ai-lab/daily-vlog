@@ -88,9 +88,9 @@ def main():
     approve = ovsp.add_parser('save'); approve.add_argument('proposal'); approve.add_argument('--proposal-id', required=True)
     approve.add_argument('--approval', required=True)
     history = sp.add_parser('history'); hsp = history.add_subparsers(dest='action', required=True)
-    hs = hsp.add_parser('show'); hs.add_argument('--format'); hs.add_argument('--store')
+    hs = hsp.add_parser('show'); hs.add_argument('--format'); hs.add_argument('--store'); hs.add_argument('--type', dest='content_type')
     hr = hsp.add_parser('record'); hr.add_argument('--output', required=True); hr.add_argument('--plan', required=True)
-    hr.add_argument('--format'); hr.add_argument('--production-id'); hr.add_argument('--store')
+    hr.add_argument('--format'); hr.add_argument('--production-id'); hr.add_argument('--store'); hr.add_argument('--type', dest='content_type'); hr.add_argument('--type-label')
     hf = hsp.add_parser('feedback'); hf.add_argument('id'); hf.add_argument('--status', required=True)
     hf.add_argument('--message', required=True); hf.add_argument('--change', action='append', default=[]); hf.add_argument('--store')
     r = sp.add_parser('render', add_help=False); r.add_argument('arguments', nargs=argparse.REMAINDER)
@@ -151,8 +151,8 @@ def main():
             result = save(a.proposal, a.proposal_id, a.approval)
     elif a.command == 'history':
         from production_history import show, record, feedback
-        if a.action == 'show': result = show(a.format, a.store)
-        elif a.action == 'record': result = record(a.output, a.plan, a.format, a.store, a.production_id)
+        if a.action == 'show': result = show(a.format, a.store, a.content_type)
+        elif a.action == 'record': result = record(a.output, a.plan, a.format, a.store, a.production_id, a.content_type, a.type_label)
         else: result = feedback(a.id, a.status, a.message, a.change, a.store)
     elif a.command == 'frames':
         info = probe(a.file); duration = float(info['format']['duration'])

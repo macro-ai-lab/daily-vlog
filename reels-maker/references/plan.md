@@ -47,3 +47,5 @@
 ## 제작 이력 메타데이터
 
 새 계획 최상위에 `production_id`(작품별 안정된 ID, 수정 버전 간 동일)와 `edit_format`(`timelog` / `moments` / `story`)을 넣는다. 렌더 후 [타입별 제작 이력](production-history.md)에 사용된다. 기존 계획에 없으면 unclassified로 보존하며 자동으로 타임로그라고 추정하지 않는다.
+
+콘텐츠 유형은 `content_type`, 표시명은 `content_type_label`, 편집 방식은 `edit_format`으로 분리한다. 모든 키는 개방형이며 [유형 안내](formats.md)에 따라 새 키를 추가할 수 있다. 예: `content_type:travel_review`, `content_type_label:여행 후기`, `edit_format:timelog`.
