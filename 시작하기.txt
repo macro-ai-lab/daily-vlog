@@ -1,4 +1,4 @@
-릴스 메이커 · reels-maker v020
+릴스 메이커 · reels-maker v020.1
 https://github.com/macro-ai-lab/reels-maker
 README를 읽고 현재 작업 폴더에 설치해줘. 기존 파일과 개인 지침을 보존해줘.
 
@@ -6,3 +6,5 @@ README를 읽고 현재 작업 폴더에 설치해줘. 기존 파일과 개인 �
 촬영시간 표시 질문은 타임로그에서만 합니다.
 기존 daily-vlog 설치·개인 설정은 자동으로 삭제하거나 덮어쓰지 않습니다.
 설치 지원 범위와 Windows HTTPS 대체 경로의 한계는 README와 INSTALLATION.md를 확인하세요.
+
+사용자는 저장소 주소와 설치 요청문만 전달하면 됩니다. 설치 파일 다운로드·압축 해제는 에이전트가 처리합니다.
