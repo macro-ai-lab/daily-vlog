@@ -7,7 +7,7 @@ def installation_context(skill_dir=None):
     skill = Path(skill_dir or Path(__file__).resolve().parents[1]).resolve()
     skills = skill.parent
     container = skills.parent
-    marker = skills / '.daily-vlog-install'
+    marker = skills / f'.{skill.name}-install'
     if marker.is_symlink():
         raise ValueError('Invalid skill installation record')
     if marker.exists():

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-LAUNCHER = Path(__file__).resolve().parents[1] / 'daily-vlog/scripts/run.ps1'
+LAUNCHER = Path(__file__).resolve().parents[1] / 'reels-maker/scripts/run.ps1'
 CODE = re.search(r"\$DownloadCode = @'\n(.*?)\n'@", LAUNCHER.read_text(encoding='utf-8-sig'), re.S).group(1)
 
 

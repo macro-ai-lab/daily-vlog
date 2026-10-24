@@ -1,6 +1,6 @@
 ﻿param([ValidateSet('auto','codex','claude-code')][string]$Client = 'auto', [string]$ProjectPath, [switch]$UserScope)
 $ErrorActionPreference = 'Stop'
-$Name = 'daily-vlog'
+$Name = 'reels-maker'
 $HasRuntime = $true
 if ($Client -eq 'auto') { $Client = $env:AI_SKILL_CLIENT }
 switch ($Client) {

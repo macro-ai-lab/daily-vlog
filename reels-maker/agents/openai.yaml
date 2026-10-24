@@ -1,0 +1,4 @@
+interface:
+  display_name: "릴스 메이커"
+  short_description: "참고 영상과 원하는 형식을 바탕으로 분석·그림 콘티를 거쳐 릴스 제작"
+  default_prompt: "$reels-maker로 첨부 영상의 릴스를 만들어줘. 먼저 영상 형식과 참고할 링크를 받고, 타임로그일 때만 촬영시간 표시를 확인한 뒤 분석과 그림 콘티를 진행해줘."

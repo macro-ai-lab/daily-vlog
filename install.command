@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 BUNDLE="$(cd "$(dirname "$0")" && pwd -P)"
-NAME="daily-vlog"
+NAME="reels-maker"
 HAS_RUNTIME=true
 SOURCE="$BUNDLE/$NAME"
 PROJECT=""

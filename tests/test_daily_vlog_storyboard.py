@@ -10,7 +10,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILL = Path(os.environ['DAILY_VLOG_TEST_SKILL']) if os.environ.get('DAILY_VLOG_TEST_SKILL') else (ROOT / 'share/daily-vlog' if (ROOT / 'share/daily-vlog').is_dir() else ROOT / 'daily-vlog')
+SKILL = Path(os.environ['DAILY_VLOG_TEST_SKILL']) if os.environ.get('DAILY_VLOG_TEST_SKILL') else (ROOT / 'share/daily-vlog' if (ROOT / 'share/daily-vlog').is_dir() else ROOT / 'reels-maker')
 sys.path.insert(0, str(SKILL / 'scripts'))
 from PIL import Image, ImageChops, ImageStat
 from media_runtime import ffmpeg_path

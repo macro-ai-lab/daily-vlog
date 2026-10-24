@@ -3,7 +3,7 @@
 set -euo pipefail
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd -P)"
 if [[ "${1:-}" == "--help" || $# == 0 ]]; then
-  echo '일상 브이로그: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
+  echo '릴스 메이커: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE [--shared-lock FILE]'
   exit 0
 fi
 if [[ "$(uname -s)" != Darwin ]]; then
@@ -18,7 +18,7 @@ fi
 # Installation context persists outside the skill files, without client settings changes.
 SKILLS_DIR="$(dirname "$SKILL_DIR")"
 CONTAINER_DIR="$(dirname "$SKILLS_DIR")"
-INSTALL_MARKER="$SKILLS_DIR/.daily-vlog-install"
+INSTALL_MARKER="$SKILLS_DIR/.$(basename "$SKILL_DIR")-install"
 INSTALL_SCOPE="source"
 INSTALL_CLIENT="${AI_SKILL_CLIENT:-codex}"
 if [[ -L "$INSTALL_MARKER" ]]; then

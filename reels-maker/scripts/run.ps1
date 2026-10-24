@@ -32,7 +32,7 @@ with urllib.request.urlopen(sys.argv[1], context=ssl.create_default_context(), t
     }
 }
 if ($VlogArguments.Count -eq 0 -or $VlogArguments[0] -eq '--help') {
-    Write-Output 'daily-vlog: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
+    Write-Output 'reels-maker: setup | doctor | context | smoke --output-dir DIR | inspect FOLDER | inspect --files FILE... | frames FILE --output-dir DIR | survey FILE --output-dir DIR [--start SEC --end SEC --interval SEC --max-frames N] | overrides show/propose/save | customize PLAN --root DIR --patch PATCH --output NEW_PLAN | font --name NAME --output-dir DIR | render PLAN --root DIR --output FILE --poster FILE'
     return
 }
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) { throw '이 실행기는 Windows용입니다.' }
@@ -42,7 +42,7 @@ if ($NativeArch -ne 'AMD64') { throw '현재 Windows x64만 지원합니다. ARM
 $SkillDir = Split-Path $PSScriptRoot -Parent
 $SkillsDir = Split-Path $SkillDir -Parent
 $ContainerDir = Split-Path $SkillsDir -Parent
-$InstallMarker = Join-Path $SkillsDir '.daily-vlog-install'
+$InstallMarker = Join-Path $SkillsDir ('.' + (Split-Path $SkillDir -Leaf) + '-install')
 $InstallScope = 'source'
 $InstallClient = $env:AI_SKILL_CLIENT
 if (-not $InstallClient) { $InstallClient = 'codex' }

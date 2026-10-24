@@ -66,7 +66,7 @@ bash scripts/run.sh customize plan-v001.json --root WORKDIR --patch style-patch-
 
 ## 폰트 파일 확보
 
-배포 기본값은 번들 `assets/fonts/NotoSansKR-Regular.otf`이며 추가 다운로드 없이 재사용한다. Pretendard 번들은 기존 계획·명시적 선택에만 사용한다. Noto Sans KR의 다른 굵기가 필요할 때에만 공식 Google Fonts 가변 폰트와 OFL을 내려받는다:
+새 작업은 [역할별 기본 지침](default-editing.md)의 번들 Pretendard·마루 부리·SUIT를 쓴다. 기존 계획의 Noto Sans KR는 보존하며 다른 명시적 선택·개인 지침이 우선한다. 모두 실제 폰트 경로를 해당 요소에 지정한다. Noto Sans KR의 다른 굵기가 필요할 때에만 공식 Google Fonts 가변 폰트와 OFL을 내려받는다:
 
 ```sh
 bash scripts/run.sh font --name "Noto Sans KR" --output-dir WORKDIR/fonts/noto-sans-kr

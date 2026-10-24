@@ -1,6 +1,6 @@
 # 환경 준비와 지원 범위
 
-macOS 14 이상 및 Windows 10/11 x64용 시험판. 사용자 전달 Windows 실기에서 수정 소스의 첫 설치와 테스트 영상 읽기를 확인했다. 최종 ZIP의 Windows 실행·전체 브이로그 렌더·다른 계정·새 채팅은 별도 검증이다. Windows ARM/32비트와 Linux는 미지원이다. 사용자에게 터미널 명령을 직접 입력시키지 않고 에이전트가 Mac에서는 `scripts/run.sh`, Windows에서는 `scripts\run.cmd`를 실행한다. 프로젝트 설치는 `<PROJECT>/.daily-vlog-runtime/v1`을 자동 사용한다. 사용자 범위 설치의 기본 런타임 위치는 macOS `~/Library/Caches/daily-vlog/v1`, Windows `%LOCALAPPDATA%\daily-vlog\v1`이다. `DAILY_VLOG_RUNTIME`으로 쓰기 가능한 전용 위치를 지정할 수 있다. 자료/스킬과 런타임은 별개이므로 스킬 ZIP에 캐시를 담지 않는다.
+macOS 14 이상 및 Windows 10/11 x64용 시험판. 사용자 전달 Windows 실기에서 수정 소스의 첫 설치와 테스트 영상 읽기를 확인했다. 최종 ZIP의 Windows 실행·전체 브이로그 렌더·다른 계정·새 채팅은 별도 검증이다. Windows ARM/32비트와 Linux는 미지원이다. 사용자에게 터미널 명령을 직접 입력시키지 않고 에이전트가 Mac에서는 `scripts/run.sh`, Windows에서는 `scripts\run.cmd`를 실행한다. 프로젝트 설치는 `<PROJECT>/.daily-vlog-runtime/v1`을 자동 사용한다. 사용자 범위 설치의 기본 런타임 위치는 macOS `~/Library/Caches/reels-maker/v1`, Windows `%LOCALAPPDATA%\daily-vlog\v1`이다. `DAILY_VLOG_RUNTIME`으로 쓰기 가능한 전용 위치를 지정할 수 있다. 자료/스킬과 런타임은 별개이므로 스킬 ZIP에 캐시를 담지 않는다.
 
 ## 자동 설치
 
@@ -21,7 +21,7 @@ macOS 14 이상 및 Windows 10/11 x64용 시험판. 사용자 전달 Windows 실
 
 ## 비용과 데이터
 
-도구 의존성 설치에 별도 유료 API 키는 필요 없다. 에이전트 앱/계정과 서비스 이용 요금은 별개다. 패키지 다운로드는 인터넷 연결이 필요하며 렌더는 로컬에서 수행한다. 에이전트의 프레임 분석까지 완전 오프라인이라고 주장하지 않는다. 원본/스톡/음원과 시스템 폰트는 번들에 재배포하지 않는다. 기본 Noto Sans KR Regular는 SIL OFL 1.1 라이선스와 공식 출처·해시를 함께 번들에 포함한다. Pretendard는 기존 계획 호환을 위해 선택용으로 남긴다. 이 폰트는 시스템에 설치하지 않고 파일 경로로 사용한다.
+도구 의존성 설치에 별도 유료 API 키는 필요 없다. 에이전트 앱/계정과 서비스 이용 요금은 별개다. 패키지 다운로드는 인터넷 연결이 필요하며 렌더는 로컬에서 수행한다. 에이전트의 프레임 분석까지 완전 오프라인이라고 주장하지 않는다. 원본/스톡/음원과 시스템 폰트는 번들에 재배포하지 않는다. 새 기본 연출의 Pretendard·마루 부리·SUIT와 기존 호환용 Noto Sans KR Regular는 라이선스와 공식 출처·해시를 함께 번들에 포함한다. 새 역할별 기본 지침은 references/default-editing.md를 따른다. 이 폰트는 시스템에 설치하지 않고 파일 경로로 사용한다.
 
 ## 근거
 

@@ -1,4 +1,0 @@
-interface:
-  display_name: "일상 브이로그"
-  short_description: "Mac·Windows x64에서 도구 준비와 콘티·스타일 확인을 거쳐 브이로그 만들기"
-  default_prompt: "$daily-vlog로 첨부한 영상이나 지정한 폴더의 무음 일상 영상들을 짧은 세로 브이로그로 만들어줘. 필요한 도구를 준비하고 분석한 뒤 콘티와 자막 스타일을 먼저 확인받아줘."

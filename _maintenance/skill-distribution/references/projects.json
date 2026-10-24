@@ -2,8 +2,8 @@
   "policy_version": "2026-10-23.1",
   "projects": [
     {
-      "name": "daily-vlog",
-      "repository": "https://github.com/macro-ai-lab/daily-vlog"
+      "name": "reels-maker",
+      "repository": "https://github.com/macro-ai-lab/reels-maker"
     },
     {
       "name": "naver-blog-draft",

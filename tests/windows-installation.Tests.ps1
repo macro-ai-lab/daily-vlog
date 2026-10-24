@@ -20,7 +20,7 @@ function Parse-Script([string]$Path) {
     return $Result
 }
 $InstallerPath = Join-Path $Repo 'install-windows.ps1'
-$LauncherPath = Join-Path $Repo 'daily-vlog/scripts/run.ps1'
+$LauncherPath = Join-Path $Repo 'reels-maker/scripts/run.ps1'
 $InstallerAst = Parse-Script $InstallerPath
 $LauncherAst = Parse-Script $LauncherPath
 Check 'PowerShell scripts parse' $true
@@ -35,7 +35,7 @@ try {
     }
     $FixtureInstaller = Join-Path $Bundle 'install-windows.ps1'
     [IO.File]::WriteAllText($FixtureInstaller, $Text, (New-Object Text.UTF8Encoding($true)))
-    $Skill = Join-Path $Bundle 'daily-vlog'
+    $Skill = Join-Path $Bundle 'reels-maker'
     [IO.Directory]::CreateDirectory((Join-Path $Skill 'scripts')) | Out-Null
     [IO.File]::WriteAllText((Join-Path $Skill 'SKILL.md'), 'fixture')
     [IO.File]::WriteAllText((Join-Path $Skill 'scripts/run.ps1'), '[IO.File]::AppendAllText($env:INSTALL_TEST_LOG, ($args[0] + "`n"))')
@@ -52,17 +52,17 @@ try {
         $Project = Join-Path $Work ($Client + ' project'); [IO.Directory]::CreateDirectory($Project) | Out-Null
         & $FixtureInstaller -Client $Client -ProjectPath $Project
         $Skills = Join-Path (Join-Path $Project $(if ($Client -eq 'codex') {'.agents'} else {'.claude'})) 'skills'
-        $Target = Join-Path $Skills 'daily-vlog'
+        $Target = Join-Path $Skills 'reels-maker'
         Check "$Client new project" (Test-Path -LiteralPath (Join-Path $Target 'SKILL.md'))
         & $FixtureInstaller -Client $Client -ProjectPath $Project
         Check "$Client identical retry" $true
-        $Marker = Join-Path $Skills '.daily-vlog-install'
+        $Marker = Join-Path $Skills '.reels-maker-install'
         $MarkerBefore = [IO.File]::ReadAllText($Marker)
         [IO.File]::WriteAllText($Marker, "skill-install-v1`nother-client`nproject`n")
         Expect-Error "$Client conflicting marker preserved" { & $FixtureInstaller -Client $Client -ProjectPath $Project } 'INSTALL_CONTEXT_CONFLICT'
         Check "$Client conflicting marker unchanged" ([IO.File]::ReadAllText($Marker).Contains('other-client'))
         [IO.File]::WriteAllText($Marker, $MarkerBefore)
-        $Lock = [IO.File]::Open((Join-Path $Skills '.daily-vlog-install.lock'), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
+        $Lock = [IO.File]::Open((Join-Path $Skills '.reels-maker-install.lock'), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
         try { Expect-Error "$Client existing lock respected" { & $FixtureInstaller -Client $Client -ProjectPath $Project } 'INSTALL_LOCK_OR_PERMISSION' }
         finally { $Lock.Dispose() }
         [IO.File]::WriteAllText((Join-Path $Target 'SKILL.md'), 'user modification')
