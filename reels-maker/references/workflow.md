@@ -111,3 +111,7 @@ v018의 manifest 기반 이미지 기록은 실제 프레임 스타일 미리보
 ## 레퍼런스와 시간 질문 기록
 
 `vlog-session.json.initial_options.references`에 URL·참고 요소·접근 상태·확인한 근거를 작품별로 기록한다. URL을 받지 않았다면 빈 목록으로 진행할 수 있다. 접근 상태는 received / partially_viewed / reviewed / inaccessible로 구분한다. `edit_format:auto`이면 형식 추천 후 실제 형식과 선택 근거를 남기고 타임로그일 때만 미정 시간 질문을 한다. 비타임로그에서 시간 표시를 지정하지 않았다면 `show_capture_time:false`, `capture_time_choice_source:not_applicable`로 기록한다. 명시적 시간 요청·기존 승인·개인 지침이 있으면 그 값과 근거를 유지한다. 단순히 질문하지 않았다는 이유로 사용자 응답이나 영구 개인 설정을 만들어내지 않는다.
+
+## 렌더 후 누적과 다음 제작
+
+[제작 이력](production-history.md)에 따라 안정된 production_id와 실제 edit_format을 세션·모든 계획 버전에 남긴다. 매 렌더 후 history 등록 상태와 ID를 세션에 기록하고 결과 전달에 이력 갱신 여부를 짧게 알린다. 수정 요청·최종 선택은 해당 버전에 실제 사용자 답을 기록한다. 다음 작품에서는 승인된 개인 지침과 같은 타입의 이전 작품·수정 피드백을 읽고 제안한다.

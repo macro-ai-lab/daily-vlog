@@ -43,3 +43,7 @@
 이 설정은 단순 gain+fade이며 자동 loudness 보정을 약속하지 않는다. 출력 구간 이상의 길이가 있는 음원이 필요하다. MP4에서 음원을 추출해 재사용하지 않는다. 법적으로 사용할 수 있는 별도 원본만 쓴다.
 
 새 기본 연출의 Pretendard·마루 부리·SUIT와 기존 호환용 Noto Sans KR는 번들 파일을 사용한다. 개인 오버라이드와 이번 영상의 명시적 폰트 선택이 우선한다. Windows의 단일 TTF에서는 macOS 예제의 font_index를 0으로 정규화한다. 다른 폰트를 직접 지정하면 `.ttc`의 font_index가 달라질 수 있으므로 확인한다. 저작권이 있는 시스템 폰트를 복사해 배포하지 않는다.
+
+## 제작 이력 메타데이터
+
+새 계획 최상위에 `production_id`(작품별 안정된 ID, 수정 버전 간 동일)와 `edit_format`(`timelog` / `moments` / `story`)을 넣는다. 렌더 후 [타입별 제작 이력](production-history.md)에 사용된다. 기존 계획에 없으면 unclassified로 보존하며 자동으로 타임로그라고 추정하지 않는다.

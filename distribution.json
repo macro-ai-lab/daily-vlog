@@ -3,8 +3,8 @@
   "policy_version": "2026-10-23.1",
   "name": "reels-maker",
   "repository": "https://github.com/macro-ai-lab/reels-maker",
-  "version": "v020.1",
-  "archive": "reels-maker-skill-v020.1.zip",
+  "version": "v021",
+  "archive": "reels-maker-skill-v021.zip",
   "clients": [
     "codex",
     "claude-code"

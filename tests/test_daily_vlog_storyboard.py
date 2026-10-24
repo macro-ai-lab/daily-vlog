@@ -116,7 +116,14 @@ class StoryboardTests(unittest.TestCase):
         env = dict(os.environ)
         # A child render must not read the developer's real personal defaults.
         env['CODEX_HOME'] = str(self.work/'client-config')
+        env['REELS_MAKER_HISTORY'] = str(self.work/'production-history')
         subprocess.run(command, check=True, capture_output=True, text=True, env=env, timeout=180)
+        report = json.loads((self.work/'preview.report.json').read_text(encoding='utf-8'))
+        self.assertEqual(report['production_history']['status'], 'recorded')
+        self.assertEqual(report['production_history']['edit_format'], 'unclassified')
+        memory = json.loads((self.work/'production-history/summary.json').read_text(encoding='utf-8'))
+        self.assertEqual(memory['by_format']['unclassified']['render_count'], 1)
+        self.assertEqual(memory['by_format']['unclassified']['accepted_production_count'], 0)
         extracted = self.work/'from-mp4.png'
         subprocess.run([ffmpeg_path(), '-hide_banner', '-nostdin', '-v', 'error', '-i', str(self.work/'preview.mp4'),
                         '-vf', r'select=eq(n\,30)', '-frames:v', '1', str(extracted)], check=True, capture_output=True)

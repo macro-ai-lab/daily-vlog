@@ -207,6 +207,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("plan", type=Path)
     p.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    p.add_argument("--no-history", action="store_true", help="Do not store this production in personal history")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--poster", type=Path, required=True)
     p.add_argument("--shared-lock", type=Path, required=True, help="Existing common lock, opened rb; contents never changed")
@@ -297,6 +298,15 @@ def main():
         for name,data in [("plan",plan),("source",source_info),("report",report)]:
             with sidecars[name].open("x") as f:
                 json.dump(data,f,ensure_ascii=False,indent=2);f.write("\n")
+        # History is separate from render success and from permanent user preferences.
+        try:
+            from production_history import record
+            report['production_history'] = ({'status': 'skipped_by_request'} if a.no_history
+                                            else record(output, sidecars['plan']))
+        except Exception as error:
+            report['production_history'] = {'status': 'failed', 'error': str(error),
+                                            'retry': 'history record --output OUTPUT --plan OUTPUT.plan.json'}
+        sidecars['report'].write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding='utf-8')
         print(json.dumps({k:v for k,v in report.items() if k!="probe"},ensure_ascii=False))
 
 

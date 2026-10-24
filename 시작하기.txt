@@ -1,4 +1,4 @@
-릴스 메이커 · reels-maker v020.1
+릴스 메이커 · reels-maker v021
 https://github.com/macro-ai-lab/reels-maker
 README를 읽고 현재 작업 폴더에 설치해줘. 기존 파일과 개인 지침을 보존해줘.
 

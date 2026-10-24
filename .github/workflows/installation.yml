@@ -65,6 +65,7 @@ jobs:
           env = dict(os.environ, DAILY_VLOG_TEST_SKILL=str(skill))
           subprocess.run([str(python), '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_daily_vlog_storyboard.py', '-v'], env=env, check=True)
           subprocess.run([str(python), '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_reels_maker_context.py', '-v'], env=env, check=True)
+          subprocess.run([str(python), '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-p', 'test_reels_maker_history.py', '-v'], env=env, check=True)
           PYTEST
       - uses: actions/upload-artifact@v4
         if: always()
